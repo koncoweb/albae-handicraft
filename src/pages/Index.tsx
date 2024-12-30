@@ -1,14 +1,72 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import Layout from "@/components/Layout";
+import { Card, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const Index = () => {
+export default function Index() {
+  useEffect(() => {
+    document.title = "Albae Handicraft - Handmade Crafts & Artisan Products";
+  }, []);
+
+  const { data: featuredProducts } = useQuery({
+    queryKey: ["featuredProducts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("active", true)
+        .limit(4);
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
-};
+    <Layout>
+      <section className="bg-gray-50 py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
+              Welcome to Albae Handicraft
+            </h1>
+            <p className="mt-4 text-xl text-gray-600">
+              Discover our collection of handcrafted products made with love and care
+            </p>
+            <Link
+              to="/products"
+              className="mt-8 inline-block bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90"
+            >
+              View All Products
+            </Link>
+          </div>
+        </div>
+      </section>
 
-export default Index;
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Featured Products</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredProducts?.map((product) => (
+              <Card key={product.id}>
+                <Link to={`/products/${product.slug}`}>
+                  <img
+                    src={product.featured_image}
+                    alt={product.nama}
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-lg mb-2">{product.nama}</h3>
+                    <p className="text-gray-600">${product.price.toFixed(2)}</p>
+                  </CardContent>
+                </Link>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+    </Layout>
+  );
+}
