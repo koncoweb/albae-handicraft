@@ -1,66 +1,93 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const PIXABAY_API_KEY = Deno.env.get('PIXABAY_API_KEY')
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+// Create a Supabase client with the service role key
+const supabaseAdmin = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+)
 
-serve(async (req) => {
+async function searchPixabayImage(query: string, apiKey: string): Promise<string | null> {
+  const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(query)}&image_type=photo&per_page=3&safesearch=true`;
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.hits && data.hits.length > 0) {
+      // Get a random image from the top 3 results
+      const randomIndex = Math.floor(Math.random() * Math.min(3, data.hits.length));
+      return data.hits[randomIndex].previewURL; // Using previewURL for smaller image size
+    }
+  } catch (error) {
+    console.error('Error fetching from Pixabay:', error);
+  }
+  
+  return null;
+}
+
+Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    // Initialize Supabase client with service role key for admin access
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-    
-    // Fetch all products
-    const { data: products, error: productsError } = await supabase
-      .from('products')
-      .select('*')
-    
-    if (productsError) throw productsError
+    const pixabayApiKey = Deno.env.get('PIXABAY_API_KEY');
+    if (!pixabayApiKey) {
+      throw new Error('Pixabay API key not found');
+    }
 
-    // For each product, fetch a relevant image from Pixabay
-    for (const product of products) {
-      // Use product category or name as search term
-      const searchTerm = encodeURIComponent(product.category || product.nama)
+    // Get all products
+    const { data: products, error: fetchError } = await supabaseAdmin
+      .from('products')
+      .select('*');
+
+    if (fetchError) throw fetchError;
+    
+    console.log(`Found ${products?.length} products to update`);
+
+    // Update each product's featured image
+    for (const product of products || []) {
+      // Use category as the search term, fallback to product name
+      const searchTerm = product.category || product.nama;
+      console.log(`Searching image for product: ${product.nama} using term: ${searchTerm}`);
       
-      const response = await fetch(
-        `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${searchTerm}&image_type=photo&per_page=3&min_width=300&min_height=300`
-      )
+      const imageUrl = await searchPixabayImage(searchTerm, pixabayApiKey);
       
-      const data = await response.json()
-      
-      if (data.hits && data.hits.length > 0) {
-        // Get a random image from the results
-        const randomIndex = Math.floor(Math.random() * Math.min(data.hits.length, 3))
-        const image = data.hits[randomIndex]
-        
-        // Update the product with the new image URL
-        // Using previewURL for smaller image size (approximately 150x150)
-        const { error: updateError } = await supabase
+      if (imageUrl) {
+        const { error: updateError } = await supabaseAdmin
           .from('products')
-          .update({ featured_image: image.previewURL })
-          .eq('id', product.id)
-        
-        if (updateError) throw updateError
+          .update({ featured_image: imageUrl })
+          .eq('id', product.id);
+
+        if (updateError) {
+          console.error(`Error updating product ${product.id}:`, updateError);
+        } else {
+          console.log(`Successfully updated image for product: ${product.nama}`);
+        }
+      } else {
+        console.log(`No image found for product: ${product.nama}`);
       }
     }
 
     return new Response(
-      JSON.stringify({ message: 'Product images updated successfully' }),
+      JSON.stringify({ message: 'Products updated successfully' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    );
+
   } catch (error) {
+    console.error('Error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
-    )
+      { 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
   }
 })
