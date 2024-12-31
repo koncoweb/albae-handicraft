@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import UpdateProductImages from "@/components/UpdateProductImages";
 
 export default function Index() {
   useEffect(() => {
@@ -35,12 +36,17 @@ export default function Index() {
             <p className="mt-4 text-xl text-gray-600">
               Temukan koleksi produk kerajinan tangan kami yang dibuat dengan penuh cinta dan perhatian
             </p>
-            <Link
-              to="/products"
-              className="mt-8 inline-block bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90"
-            >
-              Lihat Semua Produk
-            </Link>
+            <div className="mt-8 space-y-4">
+              <Link
+                to="/products"
+                className="inline-block bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90"
+              >
+                Lihat Semua Produk
+              </Link>
+              <div className="block">
+                <UpdateProductImages />
+              </div>
+            </div>
           </div>
         </div>
       </section>
