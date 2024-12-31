@@ -3,54 +3,56 @@ import Layout from "@/components/Layout";
 
 export default function About() {
   useEffect(() => {
-    document.title = "About Us - Albae Handicraft";
+    document.title = "Tentang Kami - Albae Handicraft";
   }, []);
 
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">About Albae Handicraft</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-8">Tentang Albae Handicraft</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="space-y-6">
             <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Story</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Cerita Kami</h2>
               <p className="text-gray-600">
-                Albae Handicraft was founded with a passion for preserving and promoting traditional craftsmanship. 
-                Our journey began with a simple idea: to bring authentic, handcrafted products to people who appreciate 
-                the beauty of artisanal work.
+                Albae Handicraft didirikan dengan semangat untuk melestarikan dan mempromosikan 
+                kerajinan tangan tradisional. Perjalanan kami dimulai dengan ide sederhana: 
+                menghadirkan produk kerajinan tangan autentik kepada orang-orang yang menghargai 
+                keindahan karya artisan.
               </p>
             </section>
             
             <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Mission</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Misi Kami</h2>
               <p className="text-gray-600">
-                We are committed to supporting local artisans and preserving traditional crafting techniques while 
-                bringing unique, high-quality handicrafts to our customers. Each piece tells a story and carries 
-                the dedication of skilled craftspeople.
+                Kami berkomitmen untuk mendukung pengrajin lokal dan melestarikan teknik kerajinan 
+                tradisional sambil menghadirkan kerajinan tangan unik dan berkualitas tinggi kepada 
+                pelanggan kami. Setiap karya menceritakan kisah dan membawa dedikasi dari pengrajin 
+                yang terampil.
               </p>
             </section>
           </div>
           
           <div className="space-y-6">
             <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Values</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Nilai-Nilai Kami</h2>
               <ul className="space-y-4 text-gray-600">
                 <li className="flex items-start">
-                  <span className="font-semibold mr-2">Quality:</span>
-                  Every product is carefully crafted with attention to detail.
+                  <span className="font-semibold mr-2">Kualitas:</span>
+                  Setiap produk dibuat dengan penuh perhatian terhadap detail.
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold mr-2">Authenticity:</span>
-                  We celebrate traditional techniques and genuine materials.
+                  <span className="font-semibold mr-2">Keaslian:</span>
+                  Kami merayakan teknik tradisional dan material asli.
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold mr-2">Sustainability:</span>
-                  We prioritize eco-friendly practices and materials.
+                  <span className="font-semibold mr-2">Keberlanjutan:</span>
+                  Kami memprioritaskan praktik dan material ramah lingkungan.
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold mr-2">Community:</span>
-                  Supporting local artisans and preserving cultural heritage.
+                  <span className="font-semibold mr-2">Komunitas:</span>
+                  Mendukung pengrajin lokal dan melestarikan warisan budaya.
                 </li>
               </ul>
             </section>

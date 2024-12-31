@@ -10,16 +10,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Link>
           <div className="flex space-x-4">
             <Link to="/" className="text-gray-700 hover:text-gray-900">
-              Home
+              Beranda
             </Link>
             <Link to="/products" className="text-gray-700 hover:text-gray-900">
-              Products
+              Produk
             </Link>
             <Link to="/about" className="text-gray-700 hover:text-gray-900">
-              About
+              Tentang
             </Link>
             <Link to="/contact" className="text-gray-700 hover:text-gray-900">
-              Contact
+              Kontak
             </Link>
           </div>
         </nav>
@@ -30,7 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <footer className="bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-center text-gray-500">
-            © {new Date().getFullYear()} Albae Handicraft. All rights reserved.
+            © {new Date().getFullYear()} Albae Handicraft. Hak Cipta Dilindungi.
           </p>
         </div>
       </footer>

@@ -12,7 +12,7 @@ export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
-    document.title = "Products - Albae Handicraft";
+    document.title = "Produk - Albae Handicraft";
   }, []);
 
   const { data: products, isLoading } = useQuery({
@@ -54,14 +54,14 @@ export default function Products() {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Our Products</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Produk Kami</h1>
         
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
               type="text"
-              placeholder="Search products..."
+              placeholder="Cari produk..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -75,7 +75,7 @@ export default function Products() {
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="border rounded-md p-2"
             >
-              <option value="">All Categories</option>
+              <option value="">Semua Kategori</option>
               {categories?.map((category) => (
                 <option key={category} value={category}>
                   {category}
@@ -86,7 +86,7 @@ export default function Products() {
         </div>
 
         {isLoading ? (
-          <div className="text-center py-8">Loading...</div>
+          <div className="text-center py-8">Memuat...</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products?.map((product) => (
@@ -100,7 +100,7 @@ export default function Products() {
                   <CardContent className="p-4">
                     <h2 className="font-semibold text-lg mb-2">{product.nama}</h2>
                     <p className="text-gray-600 mb-2">{product.category}</p>
-                    <p className="font-bold">${product.price.toFixed(2)}</p>
+                    <p className="font-bold">Rp {product.price.toLocaleString('id-ID')}</p>
                   </CardContent>
                 </Link>
               </Card>

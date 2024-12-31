@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export default function Index() {
   useEffect(() => {
-    document.title = "Albae Handicraft - Handmade Crafts & Artisan Products";
+    document.title = "Albae Handicraft - Kerajinan Tangan & Produk Artisan";
   }, []);
 
   const { data: featuredProducts } = useQuery({
@@ -30,16 +30,16 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
-              Welcome to Albae Handicraft
+              Selamat Datang di Albae Handicraft
             </h1>
             <p className="mt-4 text-xl text-gray-600">
-              Discover our collection of handcrafted products made with love and care
+              Temukan koleksi produk kerajinan tangan kami yang dibuat dengan penuh cinta dan perhatian
             </p>
             <Link
               to="/products"
               className="mt-8 inline-block bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90"
             >
-              View All Products
+              Lihat Semua Produk
             </Link>
           </div>
         </div>
@@ -47,7 +47,7 @@ export default function Index() {
 
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Featured Products</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Produk Unggulan</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts?.map((product) => (
               <Card key={product.id}>
@@ -59,7 +59,7 @@ export default function Index() {
                   />
                   <CardContent className="p-4">
                     <h3 className="font-semibold text-lg mb-2">{product.nama}</h3>
-                    <p className="text-gray-600">${product.price.toFixed(2)}</p>
+                    <p className="text-gray-600">Rp {product.price.toLocaleString('id-ID')}</p>
                   </CardContent>
                 </Link>
               </Card>
