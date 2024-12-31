@@ -3,13 +3,14 @@ import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Filter, Search } from "lucide-react";
 
 export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "Produk - Albae Handicraft";
@@ -90,19 +91,21 @@ export default function Products() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products?.map((product) => (
-              <Card key={product.id}>
-                <Link to={`/products/${product.slug}`}>
-                  <img
-                    src={product.featured_image}
-                    alt={product.nama}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <CardContent className="p-4">
-                    <h2 className="font-semibold text-lg mb-2">{product.nama}</h2>
-                    <p className="text-gray-600 mb-2">{product.category}</p>
-                    <p className="font-bold">Rp {product.price.toLocaleString('id-ID')}</p>
-                  </CardContent>
-                </Link>
+              <Card 
+                key={product.id} 
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => navigate(`/products/${product.slug}`)}
+              >
+                <img
+                  src={product.featured_image}
+                  alt={product.nama}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+                <CardContent className="p-4">
+                  <h2 className="font-semibold text-lg mb-2">{product.nama}</h2>
+                  <p className="text-gray-600 mb-2">{product.category}</p>
+                  <p className="font-bold">Rp {product.price.toLocaleString('id-ID')}</p>
+                </CardContent>
               </Card>
             ))}
           </div>
