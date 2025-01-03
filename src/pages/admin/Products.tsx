@@ -11,6 +11,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Product {
   id: string;
@@ -21,10 +31,31 @@ interface Product {
   material: string;
   description: string;
   active: boolean;
+  featured_image: string;
+}
+
+interface ProductFormData {
+  nama: string;
+  category: string;
+  price: string;
+  material: string;
+  description: string;
+  featured_image: string;
 }
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [formData, setFormData] = useState<ProductFormData>({
+    nama: "",
+    category: "",
+    price: "",
+    material: "",
+    description: "",
+    featured_image: "",
+  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,6 +80,109 @@ export default function AdminProducts() {
     setProducts(data || []);
   };
 
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const createSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "");
+  };
+
+  const handleAddProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const slug = createSlug(formData.nama);
+    
+    const { error } = await supabase.from("products").insert([
+      {
+        nama: formData.nama,
+        slug,
+        category: formData.category,
+        price: parseFloat(formData.price),
+        material: formData.material,
+        description: formData.description,
+        featured_image: formData.featured_image,
+        active: true,
+      },
+    ]);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to create product",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Product created successfully",
+    });
+    setIsAddDialogOpen(false);
+    setFormData({
+      nama: "",
+      category: "",
+      price: "",
+      material: "",
+      description: "",
+      featured_image: "",
+    });
+    fetchProducts();
+  };
+
+  const handleEditProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedProduct) return;
+
+    const { error } = await supabase
+      .from("products")
+      .update({
+        nama: formData.nama,
+        category: formData.category,
+        price: parseFloat(formData.price),
+        material: formData.material,
+        description: formData.description,
+        featured_image: formData.featured_image,
+      })
+      .eq("id", selectedProduct.id);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update product",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Product updated successfully",
+    });
+    setIsEditDialogOpen(false);
+    setSelectedProduct(null);
+    fetchProducts();
+  };
+
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product);
+    setFormData({
+      nama: product.nama,
+      category: product.category,
+      price: product.price.toString(),
+      material: product.material,
+      description: product.description,
+      featured_image: product.featured_image,
+    });
+    setIsEditDialogOpen(true);
+  };
+
   const toggleProductStatus = async (id: string, currentStatus: boolean) => {
     const { error } = await supabase
       .from("products")
@@ -71,12 +205,91 @@ export default function AdminProducts() {
     fetchProducts();
   };
 
+  const ProductForm = ({ onSubmit }: { onSubmit: (e: React.FormEvent) => void }) => (
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="nama">Name</Label>
+        <Input
+          id="nama"
+          name="nama"
+          value={formData.nama}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="category">Category</Label>
+        <Input
+          id="category"
+          name="category"
+          value={formData.category}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="price">Price</Label>
+        <Input
+          id="price"
+          name="price"
+          type="number"
+          value={formData.price}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="material">Material</Label>
+        <Input
+          id="material"
+          name="material"
+          value={formData.material}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="featured_image">Featured Image URL</Label>
+        <Input
+          id="featured_image"
+          name="featured_image"
+          value={formData.featured_image}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          name="description"
+          value={formData.description}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+      <Button type="submit">
+        {selectedProduct ? "Update Product" : "Add Product"}
+      </Button>
+    </form>
+  );
+
   return (
     <Layout>
       <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Manage Products</h1>
-          <Button>Add New Product</Button>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>Add New Product</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Product</DialogTitle>
+              </DialogHeader>
+              <ProductForm onSubmit={handleAddProduct} />
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="bg-white rounded-lg shadow">
           <Table>
@@ -117,7 +330,11 @@ export default function AdminProducts() {
                       >
                         {product.active ? "Deactivate" : "Activate"}
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(product)}
+                      >
                         Edit
                       </Button>
                     </div>
@@ -127,6 +344,15 @@ export default function AdminProducts() {
             </TableBody>
           </Table>
         </div>
+
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Product</DialogTitle>
+            </DialogHeader>
+            <ProductForm onSubmit={handleEditProduct} />
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
