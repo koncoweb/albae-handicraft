@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -11,51 +11,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-
-interface Product {
-  id: string;
-  nama: string;
-  slug: string;
-  category: string;
-  price: number;
-  material: string;
-  description: string;
-  active: boolean;
-  featured_image: string;
-}
-
-interface ProductFormData {
-  nama: string;
-  category: string;
-  price: string;
-  material: string;
-  description: string;
-  featured_image: string;
-}
+import { ProductFormDialog } from "@/components/admin/ProductFormDialog";
+import type { Product } from "@/types/product";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [formData, setFormData] = useState<ProductFormData>({
-    nama: "",
-    category: "",
-    price: "",
-    material: "",
-    description: "",
-    featured_image: "",
-  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -80,13 +43,6 @@ export default function AdminProducts() {
     setProducts(data || []);
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const createSlug = (text: string) => {
     return text
       .toLowerCase()
@@ -94,8 +50,7 @@ export default function AdminProducts() {
       .replace(/(^-|-$)+/g, "");
   };
 
-  const handleAddProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddProduct = async (formData: any) => {
     const slug = createSlug(formData.nama);
     
     const { error } = await supabase.from("products").insert([
@@ -125,19 +80,10 @@ export default function AdminProducts() {
       description: "Product created successfully",
     });
     setIsAddDialogOpen(false);
-    setFormData({
-      nama: "",
-      category: "",
-      price: "",
-      material: "",
-      description: "",
-      featured_image: "",
-    });
     fetchProducts();
   };
 
-  const handleEditProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleEditProduct = async (formData: any) => {
     if (!selectedProduct) return;
 
     const { error } = await supabase
@@ -172,14 +118,6 @@ export default function AdminProducts() {
 
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
-    setFormData({
-      nama: product.nama,
-      category: product.category,
-      price: product.price.toString(),
-      material: product.material,
-      description: product.description,
-      featured_image: product.featured_image,
-    });
     setIsEditDialogOpen(true);
   };
 
@@ -205,96 +143,21 @@ export default function AdminProducts() {
     fetchProducts();
   };
 
-  const ProductForm = ({ onSubmit }: { onSubmit: (e: React.FormEvent) => void }) => (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="nama">Name</Label>
-        <Input
-          id="nama"
-          name="nama"
-          value={formData.nama}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="category">Category</Label>
-        <Input
-          id="category"
-          name="category"
-          value={formData.category}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="price">Price</Label>
-        <Input
-          id="price"
-          name="price"
-          type="number"
-          value={formData.price}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="material">Material</Label>
-        <Input
-          id="material"
-          name="material"
-          value={formData.material}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="featured_image">Featured Image URL</Label>
-        <Input
-          id="featured_image"
-          name="featured_image"
-          value={formData.featured_image}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-      <Button type="submit">
-        {selectedProduct ? "Update Product" : "Add Product"}
-      </Button>
-    </form>
-  );
-
   return (
     <Layout>
       <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Manage Products</h1>
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>Add New Product</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Product</DialogTitle>
-              </DialogHeader>
-              <ProductForm onSubmit={handleAddProduct} />
-            </DialogContent>
-          </Dialog>
+          <Button onClick={() => setIsAddDialogOpen(true)}>
+            Add New Product
+          </Button>
         </div>
+
         <div className="bg-white rounded-lg shadow">
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Image</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Price</TableHead>
@@ -305,6 +168,15 @@ export default function AdminProducts() {
             <TableBody>
               {products.map((product) => (
                 <TableRow key={product.id}>
+                  <TableCell>
+                    {product.featured_image && (
+                      <img
+                        src={product.featured_image}
+                        alt={product.nama}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                    )}
+                  </TableCell>
                   <TableCell>{product.nama}</TableCell>
                   <TableCell>{product.category}</TableCell>
                   <TableCell>Rp {product.price.toLocaleString()}</TableCell>
@@ -345,14 +217,20 @@ export default function AdminProducts() {
           </Table>
         </div>
 
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Product</DialogTitle>
-            </DialogHeader>
-            <ProductForm onSubmit={handleEditProduct} />
-          </DialogContent>
-        </Dialog>
+        <ProductFormDialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+          onSubmit={handleAddProduct}
+          title="Add New Product"
+        />
+
+        <ProductFormDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          selectedProduct={selectedProduct}
+          onSubmit={handleEditProduct}
+          title="Edit Product"
+        />
       </div>
     </Layout>
   );
