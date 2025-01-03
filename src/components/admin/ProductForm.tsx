@@ -51,7 +51,7 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
     const { data, error } = await supabase
       .from("products")
       .select("category")
-      .distinct();
+      .order('category');
 
     if (error) {
       toast({
@@ -62,7 +62,9 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
       return;
     }
 
-    setCategories(data.map((item) => item.category));
+    // Get unique categories
+    const uniqueCategories = [...new Set(data.map(item => item.category))];
+    setCategories(uniqueCategories);
   };
 
   const handleImageUpload = async (path: string) => {
