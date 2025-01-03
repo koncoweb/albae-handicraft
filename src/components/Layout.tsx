@@ -1,12 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/login");
+  useEffect(() => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+  }, []);
+
+  const handleAuthAction = async () => {
+    if (isAuthenticated) {
+      await supabase.auth.signOut();
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
   };
 
   return (
@@ -30,10 +42,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               Kontak
             </Link>
             <button
-              onClick={handleLogout}
+              onClick={handleAuthAction}
               className="text-gray-700 hover:text-gray-900"
             >
-              Keluar
+              {isAuthenticated ? "Keluar" : "Login"}
             </button>
           </div>
         </nav>
