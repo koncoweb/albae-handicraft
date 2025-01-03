@@ -1,6 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-white shadow-sm">
@@ -8,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Link to="/" className="text-2xl font-bold text-gray-900">
             Albae Handicraft
           </Link>
-          <div className="flex space-x-4">
+          <div className="flex items-center space-x-4">
             <Link to="/" className="text-gray-700 hover:text-gray-900">
               Beranda
             </Link>
@@ -21,6 +29,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/contact" className="text-gray-700 hover:text-gray-900">
               Kontak
             </Link>
+            <button
+              onClick={handleLogout}
+              className="text-gray-700 hover:text-gray-900"
+            >
+              Keluar
+            </button>
           </div>
         </nav>
       </header>
