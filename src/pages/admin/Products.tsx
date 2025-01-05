@@ -5,6 +5,7 @@ import { ProductFormDialog } from "@/components/admin/ProductFormDialog";
 import { ProductsTable } from "@/components/admin/ProductsTable";
 import { useProducts } from "@/hooks/useProducts";
 import type { Product } from "@/types/product";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminProducts() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
