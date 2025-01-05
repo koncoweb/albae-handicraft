@@ -67,7 +67,7 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
     setCategories(uniqueCategories);
   };
 
-  const handleImageUpload = async (path: string) => {
+  const handleImageUpload = (path: string) => {
     form.setValue("featured_image", path);
   };
 
