@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ProductFormDialog } from "@/components/admin/ProductFormDialog";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import type { Product } from "@/types/product";
 
 export default function AdminProducts() {
@@ -26,22 +27,31 @@ export default function AdminProducts() {
   }, []);
 
   const fetchProducts = async () => {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .order("created_at", { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching products:", error);
+      if (error) {
+        console.error("Error fetching products:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch products: " + error.message,
+        });
+        return;
+      }
+
+      setProducts(data || []);
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to fetch products: " + error.message,
+        description: "An unexpected error occurred while fetching products",
       });
-      return;
     }
-
-    setProducts(data || []);
   };
 
   const createSlug = (text: string) => {
@@ -180,8 +190,9 @@ export default function AdminProducts() {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto py-8">
+    <ProtectedRoute requireAdmin>
+      <Layout>
+        <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Manage Products</h1>
           <Button onClick={() => setIsAddDialogOpen(true)}>
@@ -267,7 +278,8 @@ export default function AdminProducts() {
           onSubmit={handleEditProduct}
           title="Edit Product"
         />
-      </div>
-    </Layout>
+        </div>
+      </Layout>
+    </ProtectedRoute>
   );
 }
