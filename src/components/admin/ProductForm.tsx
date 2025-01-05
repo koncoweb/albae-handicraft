@@ -40,6 +40,7 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
       material: initialData?.material || "",
       description: initialData?.description || "",
       featured_image: initialData?.featured_image || "",
+      image_gallery: initialData?.image_gallery || [],
     },
   });
 
@@ -62,13 +63,25 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
       return;
     }
 
-    // Get unique categories
     const uniqueCategories = [...new Set(data.map(item => item.category))];
     setCategories(uniqueCategories);
   };
 
   const handleImageUpload = async (path: string) => {
     form.setValue("featured_image", path);
+  };
+
+  const handleGalleryImageUpload = (path: string) => {
+    const currentGallery = form.getValues("image_gallery") || [];
+    form.setValue("image_gallery", [...currentGallery, path]);
+  };
+
+  const handleRemoveGalleryImage = (path: string) => {
+    const currentGallery = form.getValues("image_gallery") || [];
+    form.setValue(
+      "image_gallery",
+      currentGallery.filter((img: string) => img !== path)
+    );
   };
 
   return (
@@ -155,6 +168,25 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
                 <FileUpload
                   onUploadComplete={handleImageUpload}
                   currentImage={field.value}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="image_gallery"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Image Gallery</FormLabel>
+              <FormControl>
+                <FileUpload
+                  onUploadComplete={handleGalleryImageUpload}
+                  multiple={true}
+                  currentImages={field.value}
+                  onRemoveImage={handleRemoveGalleryImage}
                 />
               </FormControl>
               <FormMessage />

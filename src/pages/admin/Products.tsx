@@ -36,6 +36,7 @@ export default function AdminProducts() {
           material: formData.material,
           description: formData.description,
           featured_image: formData.featured_image,
+          image_gallery: formData.image_gallery || [],
           active: true,
         },
       ]).select();
@@ -62,6 +63,7 @@ export default function AdminProducts() {
           material: formData.material,
           description: formData.description,
           featured_image: formData.featured_image,
+          image_gallery: formData.image_gallery || [],
         })
         .eq("id", selectedProduct.id);
 
