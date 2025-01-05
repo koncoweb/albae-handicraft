@@ -43,6 +43,7 @@ export function FileUpload({
           .from("product-images")
           .getPublicUrl(filePath);
 
+        // Only save file metadata if upload was successful
         const { error: dbError } = await supabase.from("files").insert({
           name: file.name,
           path: filePath,
@@ -53,6 +54,7 @@ export function FileUpload({
 
         if (dbError) throw dbError;
 
+        // Call onUploadComplete with the public URL
         onUploadComplete(publicUrl.publicUrl);
       }
 
@@ -66,8 +68,12 @@ export function FileUpload({
         title: "Error",
         description: error.message || "Failed to upload image",
       });
+      console.error("Upload error:", error);
     } finally {
       setIsUploading(false);
+      // Reset the input value to allow uploading the same file again
+      const input = document.getElementById("image-upload") as HTMLInputElement;
+      if (input) input.value = "";
     }
   };
 
