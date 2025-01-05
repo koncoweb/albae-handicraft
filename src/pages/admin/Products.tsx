@@ -32,10 +32,11 @@ export default function AdminProducts() {
       .order("created_at", { ascending: false });
 
     if (error) {
+      console.error("Error fetching products:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to fetch products",
+        description: "Failed to fetch products: " + error.message,
       });
       return;
     }
@@ -51,69 +52,94 @@ export default function AdminProducts() {
   };
 
   const handleAddProduct = async (formData: any) => {
-    const slug = createSlug(formData.nama);
-    
-    const { error } = await supabase.from("products").insert([
-      {
-        nama: formData.nama,
-        slug,
-        category: formData.category,
-        price: parseFloat(formData.price),
-        material: formData.material,
-        description: formData.description,
-        featured_image: formData.featured_image,
-        active: true,
-      },
-    ]);
+    try {
+      const slug = createSlug(formData.nama);
+      console.log("Attempting to insert product with data:", { ...formData, slug });
+      
+      const { data, error } = await supabase.from("products").insert([
+        {
+          nama: formData.nama,
+          slug,
+          category: formData.category,
+          price: parseFloat(formData.price),
+          material: formData.material,
+          description: formData.description,
+          featured_image: formData.featured_image,
+          active: true,
+        },
+      ]).select();
 
-    if (error) {
+      if (error) {
+        console.error("Error adding product:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to add product: " + error.message,
+        });
+        return;
+      }
+
+      console.log("Product added successfully:", data);
+      toast({
+        title: "Success",
+        description: "Product created successfully",
+      });
+      setIsAddDialogOpen(false);
+      fetchProducts();
+    } catch (error) {
+      console.error("Unexpected error adding product:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create product",
+        description: "An unexpected error occurred while adding the product",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Product created successfully",
-    });
-    setIsAddDialogOpen(false);
-    fetchProducts();
   };
 
   const handleEditProduct = async (formData: any) => {
     if (!selectedProduct) return;
 
-    const { error } = await supabase
-      .from("products")
-      .update({
-        nama: formData.nama,
-        category: formData.category,
-        price: parseFloat(formData.price),
-        material: formData.material,
-        description: formData.description,
-        featured_image: formData.featured_image,
-      })
-      .eq("id", selectedProduct.id);
+    try {
+      console.log("Attempting to update product with data:", formData);
+      
+      const { error } = await supabase
+        .from("products")
+        .update({
+          nama: formData.nama,
+          category: formData.category,
+          price: parseFloat(formData.price),
+          material: formData.material,
+          description: formData.description,
+          featured_image: formData.featured_image,
+        })
+        .eq("id", selectedProduct.id);
 
-    if (error) {
+      if (error) {
+        console.error("Error updating product:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to update product: " + error.message,
+        });
+        return;
+      }
+
+      console.log("Product updated successfully");
+      toast({
+        title: "Success",
+        description: "Product updated successfully",
+      });
+      setIsEditDialogOpen(false);
+      setSelectedProduct(null);
+      fetchProducts();
+    } catch (error) {
+      console.error("Unexpected error updating product:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update product",
+        description: "An unexpected error occurred while updating the product",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Product updated successfully",
-    });
-    setIsEditDialogOpen(false);
-    setSelectedProduct(null);
-    fetchProducts();
   };
 
   const handleEdit = (product: Product) => {
@@ -122,25 +148,35 @@ export default function AdminProducts() {
   };
 
   const toggleProductStatus = async (id: string, currentStatus: boolean) => {
-    const { error } = await supabase
-      .from("products")
-      .update({ active: !currentStatus })
-      .eq("id", id);
+    try {
+      const { error } = await supabase
+        .from("products")
+        .update({ active: !currentStatus })
+        .eq("id", id);
 
-    if (error) {
+      if (error) {
+        console.error("Error updating product status:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to update product status: " + error.message,
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Product status updated successfully",
+      });
+      fetchProducts();
+    } catch (error) {
+      console.error("Unexpected error updating product status:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update product status",
+        description: "An unexpected error occurred while updating the product status",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Product status updated successfully",
-    });
-    fetchProducts();
   };
 
   return (
