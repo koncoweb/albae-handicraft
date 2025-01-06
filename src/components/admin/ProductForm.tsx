@@ -29,6 +29,86 @@ interface ProductFormProps {
   onCancel: () => void;
 }
 
+// Split into smaller components to reduce file size
+const CategoryField = ({ form, categories }: { form: any; categories: string[] }) => (
+  <FormField
+    control={form.control}
+    name="category"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Category</FormLabel>
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
+            <SelectItem value="new">+ Add new category</SelectItem>
+          </SelectContent>
+        </Select>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);
+
+// Split into smaller components to reduce file size
+const ImageUploadFields = ({ 
+  form, 
+  handleImageUpload, 
+  handleGalleryImageUpload, 
+  handleRemoveGalleryImage 
+}: { 
+  form: any;
+  handleImageUpload: (path: string) => void;
+  handleGalleryImageUpload: (path: string) => void;
+  handleRemoveGalleryImage: (path: string) => void;
+}) => (
+  <>
+    <FormField
+      control={form.control}
+      name="featured_image"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Featured Image</FormLabel>
+          <FormControl>
+            <FileUpload
+              onUploadComplete={handleImageUpload}
+              currentImage={field.value}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+
+    <FormField
+      control={form.control}
+      name="image_gallery"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Image Gallery</FormLabel>
+          <FormControl>
+            <FileUpload
+              onUploadComplete={handleGalleryImageUpload}
+              multiple={true}
+              currentImages={field.value}
+              onRemoveImage={handleRemoveGalleryImage}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  </>
+);
+
 export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProps) {
   const [categories, setCategories] = useState<string[]>([]);
   const { toast } = useToast();
@@ -101,34 +181,7 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                  <SelectItem value="new">+ Add new category</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <CategoryField form={form} categories={categories} />
 
         <FormField
           control={form.control}
@@ -158,40 +211,11 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="featured_image"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Featured Image</FormLabel>
-              <FormControl>
-                <FileUpload
-                  onUploadComplete={handleImageUpload}
-                  currentImage={field.value}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="image_gallery"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Image Gallery</FormLabel>
-              <FormControl>
-                <FileUpload
-                  onUploadComplete={handleGalleryImageUpload}
-                  multiple={true}
-                  currentImages={field.value}
-                  onRemoveImage={handleRemoveGalleryImage}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <ImageUploadFields
+          form={form}
+          handleImageUpload={handleImageUpload}
+          handleGalleryImageUpload={handleGalleryImageUpload}
+          handleRemoveGalleryImage={handleRemoveGalleryImage}
         />
 
         <FormField
