@@ -3,28 +3,40 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProductDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const { data: product, isLoading } = useQuery({
+  const { data: product, isLoading, error } = useQuery({
     queryKey: ["product", slug],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
         .eq("slug", slug)
-        .eq("active", true)
         .single();
-      
+
       if (error) throw error;
+      if (!data) throw new Error("Product not found");
       return data;
     },
   });
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load product. Please try again later.",
+      });
+      navigate("/products");
+    }
+  }, [error, navigate, toast]);
 
   useEffect(() => {
     if (product) {
@@ -33,12 +45,10 @@ export default function ProductDetail() {
       // Update meta description for SEO
       const metaDescription = document.querySelector('meta[name="description"]');
       if (metaDescription) {
-        metaDescription.setAttribute("content", product.description);
-      } else {
-        const meta = document.createElement('meta');
-        meta.name = "description";
-        meta.content = product.description;
-        document.head.appendChild(meta);
+        metaDescription.setAttribute(
+          "content",
+          `${product.nama} - ${product.description}`
+        );
       }
     }
   }, [product]);
@@ -47,7 +57,14 @@ export default function ProductDetail() {
     return (
       <Layout>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">Memuat...</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Skeleton className="w-full aspect-square rounded-lg" />
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-6 w-1/4" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+          </div>
         </div>
       </Layout>
     );
@@ -57,7 +74,7 @@ export default function ProductDetail() {
     return (
       <Layout>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">Produk tidak ditemukan</div>
+          <p className="text-center text-gray-500">Product not found</p>
         </div>
       </Layout>
     );
@@ -66,72 +83,63 @@ export default function ProductDetail() {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button
-          variant="ghost"
-          className="mb-6 flex items-center gap-2"
-          onClick={() => navigate("/products")}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Kembali ke Produk
-        </Button>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <img
               src={selectedImage || product.featured_image}
               alt={product.nama}
               className="w-full rounded-lg object-cover aspect-square"
+              onError={(e) => {
+                e.currentTarget.src = "/placeholder.svg";
+                toast({
+                  variant: "destructive",
+                  title: "Error",
+                  description: "Failed to load image",
+                });
+              }}
             />
-            {product.image_gallery && product.image_gallery.length > 0 && (
-              <div className="grid grid-cols-4 gap-2">
-                <div 
-                  className={`cursor-pointer p-1 rounded-lg ${selectedImage === product.featured_image ? 'ring-2 ring-primary' : ''}`}
-                  onClick={() => setSelectedImage(product.featured_image)}
+            <div className="grid grid-cols-4 gap-2">
+              <div 
+                className={`cursor-pointer p-1 rounded-lg ${selectedImage === product.featured_image ? 'ring-2 ring-primary' : ''}`}
+                onClick={() => setSelectedImage(product.featured_image)}
+              >
+                <img
+                  src={product.featured_image}
+                  alt={`${product.nama} - Featured`}
+                  className="w-full h-20 object-cover rounded-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = "/placeholder.svg";
+                  }}
+                />
+              </div>
+              {product.image_gallery?.map((image, index) => (
+                <div
+                  key={index}
+                  className={`cursor-pointer p-1 rounded-lg ${selectedImage === image ? 'ring-2 ring-primary' : ''}`}
+                  onClick={() => setSelectedImage(image)}
                 >
                   <img
-                    src={product.featured_image}
-                    alt={`${product.nama} - Featured`}
+                    src={image}
+                    alt={`${product.nama} - Gambar ${index + 1}`}
                     className="w-full h-20 object-cover rounded-lg"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.svg";
+                    }}
                   />
                 </div>
-                {product.image_gallery.map((image, index) => (
-                  <div
-                    key={index}
-                    className={`cursor-pointer p-1 rounded-lg ${selectedImage === image ? 'ring-2 ring-primary' : ''}`}
-                    onClick={() => setSelectedImage(image)}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.nama} - Gambar ${index + 1}`}
-                      className="w-full h-20 object-cover rounded-lg"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+              ))}
+            </div>
           </div>
-
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.nama}</h1>
-              <p className="text-lg text-gray-600">{product.category}</p>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Harga</h2>
-              <p className="text-2xl font-bold text-primary">
-                Rp {product.price.toLocaleString('id-ID')}
-              </p>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Material</h2>
-              <p className="text-gray-700">{product.material}</p>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Deskripsi</h2>
-              <p className="text-gray-700 whitespace-pre-line">{product.description}</p>
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold text-gray-900">{product.nama}</h1>
+            <p className="text-2xl font-semibold text-primary">
+              Rp {product.price.toLocaleString("id-ID")}
+            </p>
+            <div className="prose max-w-none">
+              <h2 className="text-xl font-semibold">Deskripsi</h2>
+              <p>{product.description}</p>
+              <h2 className="text-xl font-semibold">Material</h2>
+              <p>{product.material}</p>
             </div>
           </div>
         </div>
