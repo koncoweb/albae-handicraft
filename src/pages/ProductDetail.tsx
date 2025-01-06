@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 export default function ProductDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", slug],
@@ -27,6 +28,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (product) {
+      setSelectedImage(product.featured_image);
       document.title = `${product.nama} - Albae Handicraft`;
       // Update meta description for SEO
       const metaDescription = document.querySelector('meta[name="description"]');
@@ -76,19 +78,34 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <img
-              src={product.featured_image}
+              src={selectedImage || product.featured_image}
               alt={product.nama}
               className="w-full rounded-lg object-cover aspect-square"
             />
             {product.image_gallery && product.image_gallery.length > 0 && (
               <div className="grid grid-cols-4 gap-2">
-                {product.image_gallery.map((image, index) => (
+                <div 
+                  className={`cursor-pointer p-1 rounded-lg ${selectedImage === product.featured_image ? 'ring-2 ring-primary' : ''}`}
+                  onClick={() => setSelectedImage(product.featured_image)}
+                >
                   <img
-                    key={index}
-                    src={image}
-                    alt={`${product.nama} - Gambar ${index + 1}`}
-                    className="w-full h-20 object-cover rounded-lg cursor-pointer"
+                    src={product.featured_image}
+                    alt={`${product.nama} - Featured`}
+                    className="w-full h-20 object-cover rounded-lg"
                   />
+                </div>
+                {product.image_gallery.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`cursor-pointer p-1 rounded-lg ${selectedImage === image ? 'ring-2 ring-primary' : ''}`}
+                    onClick={() => setSelectedImage(image)}
+                  >
+                    <img
+                      src={image}
+                      alt={`${product.nama} - Gambar ${index + 1}`}
+                      className="w-full h-20 object-cover rounded-lg"
+                    />
+                  </div>
                 ))}
               </div>
             )}
