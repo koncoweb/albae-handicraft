@@ -29,7 +29,6 @@ interface ProductFormProps {
   onCancel: () => void;
 }
 
-// Split into smaller components to reduce file size
 const CategoryField = ({ form, categories }: { form: any; categories: string[] }) => (
   <FormField
     control={form.control}
@@ -58,57 +57,6 @@ const CategoryField = ({ form, categories }: { form: any; categories: string[] }
   />
 );
 
-// Split into smaller components to reduce file size
-const ImageUploadFields = ({ 
-  form, 
-  handleImageUpload, 
-  handleGalleryImageUpload, 
-  handleRemoveGalleryImage 
-}: { 
-  form: any;
-  handleImageUpload: (path: string) => void;
-  handleGalleryImageUpload: (path: string) => void;
-  handleRemoveGalleryImage: (path: string) => void;
-}) => (
-  <>
-    <FormField
-      control={form.control}
-      name="featured_image"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Featured Image</FormLabel>
-          <FormControl>
-            <FileUpload
-              onUploadComplete={handleImageUpload}
-              currentImage={field.value}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-
-    <FormField
-      control={form.control}
-      name="image_gallery"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Image Gallery</FormLabel>
-          <FormControl>
-            <FileUpload
-              onUploadComplete={handleGalleryImageUpload}
-              multiple={true}
-              currentImages={field.value}
-              onRemoveImage={handleRemoveGalleryImage}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  </>
-);
-
 export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProps) {
   const [categories, setCategories] = useState<string[]>([]);
   const { toast } = useToast();
@@ -120,7 +68,6 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
       material: initialData?.material || "",
       description: initialData?.description || "",
       featured_image: initialData?.featured_image || "",
-      image_gallery: initialData?.image_gallery || [],
     },
   });
 
@@ -149,19 +96,6 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
 
   const handleImageUpload = (path: string) => {
     form.setValue("featured_image", path);
-  };
-
-  const handleGalleryImageUpload = (path: string) => {
-    const currentGallery = form.getValues("image_gallery") || [];
-    form.setValue("image_gallery", [...currentGallery, path]);
-  };
-
-  const handleRemoveGalleryImage = (path: string) => {
-    const currentGallery = form.getValues("image_gallery") || [];
-    form.setValue(
-      "image_gallery",
-      currentGallery.filter((img: string) => img !== path)
-    );
   };
 
   return (
@@ -211,11 +145,21 @@ export function ProductForm({ onSubmit, initialData, onCancel }: ProductFormProp
           )}
         />
 
-        <ImageUploadFields
-          form={form}
-          handleImageUpload={handleImageUpload}
-          handleGalleryImageUpload={handleGalleryImageUpload}
-          handleRemoveGalleryImage={handleRemoveGalleryImage}
+        <FormField
+          control={form.control}
+          name="featured_image"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Featured Image</FormLabel>
+              <FormControl>
+                <FileUpload
+                  onUploadComplete={handleImageUpload}
+                  currentImage={field.value}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
         <FormField
