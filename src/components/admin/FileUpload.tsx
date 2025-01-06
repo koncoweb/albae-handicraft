@@ -43,7 +43,6 @@ export function FileUpload({
           .from("product-images")
           .getPublicUrl(filePath);
 
-        // Only save file metadata if upload was successful
         const { error: dbError } = await supabase.from("files").insert({
           name: file.name,
           path: filePath,
@@ -54,7 +53,7 @@ export function FileUpload({
 
         if (dbError) throw dbError;
 
-        // Call onUploadComplete with the public URL
+        // Call onUploadComplete with the public URL for each file
         onUploadComplete(publicUrl.publicUrl);
       }
 
