@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const testSupabaseConnection = async () => {
   try {
+    console.log('Testing Supabase connection...');
     const { data, error } = await supabase
       .from('products')
       .select('id')
@@ -12,7 +13,7 @@ export const testSupabaseConnection = async () => {
       return false;
     }
     
-    console.log('Supabase connection test successful');
+    console.log('Supabase connection test successful:', data);
     return true;
   } catch (error) {
     console.error('Supabase connection test error:', error);
