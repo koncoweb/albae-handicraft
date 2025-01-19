@@ -4,13 +4,33 @@ import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { testSupabaseConnection } from "@/utils/supabaseTest";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Index() {
+  const { toast } = useToast();
+
   useEffect(() => {
     document.title = "Albae Handicraft - Kerajinan Tangan & Produk Artisan";
-  }, []);
+    
+    // Test Supabase connection on component mount
+    testSupabaseConnection().then((isConnected) => {
+      if (!isConnected) {
+        toast({
+          variant: "destructive",
+          title: "Connection Error",
+          description: "Failed to connect to database. Please check your configuration.",
+        });
+      } else {
+        toast({
+          title: "Connected",
+          description: "Successfully connected to database",
+        });
+      }
+    });
+  }, [toast]);
 
-  const { data: featuredProducts } = useQuery({
+  const { data: featuredProducts, isError } = useQuery({
     queryKey: ["featuredProducts"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -19,10 +39,28 @@ export default function Index() {
         .eq("active", true)
         .limit(4);
       
-      if (error) throw error;
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch products: " + error.message,
+        });
+        throw error;
+      }
       return data;
     },
   });
+
+  if (isError) {
+    return (
+      <Layout>
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-bold text-red-600">Error loading products</h2>
+          <p className="text-gray-600 mt-2">Please try refreshing the page</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
