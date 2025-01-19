@@ -3,8 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 export const testSupabaseConnection = async () => {
   try {
     console.log('Testing Supabase connection...', {
-      url: supabase.supabaseUrl,
-      hasKey: !!supabase.supabaseKey
+      url: "https://aaflrqcpyusowtvxmtug.supabase.co",
+      hasKey: true
     });
     
     const { data, error } = await supabase
