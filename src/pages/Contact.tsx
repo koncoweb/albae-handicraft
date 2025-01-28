@@ -24,11 +24,54 @@ export default function Contact() {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">Hubungi Kami</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
+            Hubungi Kami
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Kami siap membantu Anda dengan pertanyaan atau kebutuhan Anda
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">
+                Informasi Kontak
+              </h2>
+              <div className="space-y-4">
+                <p className="flex items-center text-muted-foreground">
+                  <MapPin className="mr-2 h-5 w-5" />
+                  Jl. Kerajinan No. 123, Yogyakarta
+                </p>
+                <p className="flex items-center text-muted-foreground">
+                  <Phone className="mr-2 h-5 w-5" />
+                  +62 123 4567 890
+                </p>
+                <p className="flex items-center text-muted-foreground">
+                  <Mail className="mr-2 h-5 w-5" />
+                  info@albaehandicraft.com
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">
+                Jam Operasional
+              </h2>
+              <div className="space-y-2 text-muted-foreground">
+                <p>Senin - Jumat: 09:00 - 17:00</p>
+                <p>Sabtu: 09:00 - 15:00</p>
+                <p>Minggu: Tutup</p>
+              </div>
+            </div>
+          </div>
+
           <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
+              Kirim Pesan
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                   Nama
@@ -72,50 +115,6 @@ export default function Contact() {
                 Kirim Pesan
               </Button>
             </form>
-          </div>
-          
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">Hubungi Kami</h2>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-4">
-                  <MapPin className="w-5 h-5 text-gray-600 mt-1" />
-                  <div>
-                    <h3 className="font-medium text-gray-900">Kunjungi Kami</h3>
-                    <p className="text-gray-600">
-                      Jalan Kerajinan 123<br />
-                      Kawasan Artisan<br />
-                      Kota Kreatif, 12345
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <Phone className="w-5 h-5 text-gray-600 mt-1" />
-                  <div>
-                    <h3 className="font-medium text-gray-900">Telepon Kami</h3>
-                    <p className="text-gray-600">+62 234 567 8900</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <Mail className="w-5 h-5 text-gray-600 mt-1" />
-                  <div>
-                    <h3 className="font-medium text-gray-900">Email Kami</h3>
-                    <p className="text-gray-600">info@albaehandicraft.com</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Jam Operasional</h2>
-              <div className="space-y-2 text-gray-600">
-                <p>Senin - Jumat: 09:00 - 18:00</p>
-                <p>Sabtu: 10:00 - 16:00</p>
-                <p>Minggu: Tutup</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

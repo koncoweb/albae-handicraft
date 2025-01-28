@@ -84,11 +84,13 @@ export default function AdminProducts() {
 
   return (
     <Layout>
-      <div className="container mx-auto py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Manage Products</h1>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-foreground">
+            Manajemen Produk
+          </h1>
           <Button onClick={() => setIsAddDialogOpen(true)}>
-            Add New Product
+            Tambah Produk
           </Button>
         </div>
 
@@ -104,7 +106,7 @@ export default function AdminProducts() {
           open={isAddDialogOpen}
           onOpenChange={setIsAddDialogOpen}
           onSubmit={handleAddProduct}
-          title="Add New Product"
+          title="Tambah Produk"
         />
 
         <ProductFormDialog
@@ -112,7 +114,7 @@ export default function AdminProducts() {
           onOpenChange={setIsEditDialogOpen}
           selectedProduct={selectedProduct}
           onSubmit={handleEditProduct}
-          title="Edit Product"
+          title="Edit Produk"
         />
       </div>
     </Layout>

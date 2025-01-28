@@ -54,9 +54,16 @@ export default function Products() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Produk Kami</h1>
-        
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
+            Produk Kami
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Temukan koleksi kerajinan tangan terbaik kami
+          </p>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
