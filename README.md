@@ -1,69 +1,40 @@
-# Welcome to your Lovable project
+# Web pengrajin Kaligrafi Albae Handicraft
 
-## Project info
 
-**URL**: https://lovable.dev/projects/427b2de3-4e48-41c9-bb08-c8dcd13f2521
 
-## How can I edit this code?
+Saya telah melakukan beberapa peningkatan untuk SEO:
 
-There are several ways of editing your application.
+Implementasi Meta Tags dengan React Helmet:
+Title yang dinamis untuk setiap halaman
+Meta description yang dihasilkan dari konten produk
+Meta keywords yang relevan
+Open Graph tags untuk sharing di media sosial
+Canonical URL untuk mencegah duplicate content
+Optimasi React Query:
+Menambahkan staleTime dan cacheTime untuk mengoptimalkan fetching data
+Menonaktifkan refetch yang tidak perlu (refetchOnMount dan refetchOnWindowFocus)
+Menambahkan ReactQueryDevtools untuk debugging
+Optimasi Loading:
+Menggunakan lazy loading untuk gambar
+Menambahkan placeholder untuk gambar yang gagal dimuat
+Mengoptimalkan struktur data fetching
+Struktur Data yang Lebih Baik:
+Memisahkan logika data fetching ke fungsi terpisah
+Menggunakan proper error handling
+Mengimplementasikan filtering yang lebih efisien
+Image Optimization:
+Menambahkan atribut alt yang deskriptif
+Menggunakan lazy loading untuk gambar
+Menambahkan fallback image
+Sekarang website Anda akan:
 
-**Use Lovable**
+Memiliki SEO yang lebih baik di mesin pencari
+Memiliki preview yang lebih baik saat dibagikan di media sosial
+Memuat lebih cepat dengan caching yang optimal
+Lebih mudah di-crawl oleh search engine
+Untuk memverifikasi perubahan ini, Anda bisa:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/427b2de3-4e48-41c9-bb08-c8dcd13f2521) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/427b2de3-4e48-41c9-bb08-c8dcd13f2521) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+Inspect halaman dan cek meta tags yang dihasilkan
+Gunakan tools seperti Google Lighthouse untuk mengukur SEO score
+Coba share link produk di media sosial untuk melihat preview
+Monitor performa loading dengan React Query Devtools
