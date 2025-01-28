@@ -46,30 +46,33 @@ export default function Products() {
 
   // Get featured image for og:image
   const featuredImage = products[0] ? getFullImageUrl(products[0].featured_image) : getFullImageUrl("/placeholder.svg");
+  const currentUrl = window.location.href;
 
   return (
     <Layout>
       <Helmet>
         <title>Produk Kerajinan Tangan | Albae Handicraft</title>
         <meta name="description" content={metaDescription} />
-        <meta name="keywords" content="kerajinan tangan, handicraft, produk lokal, indonesia" />
+        <meta name="keywords" content="kerajinan tangan, handicraft, produk lokal, dekorasi, kaligrafi, indonesia" />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Albae Handicraft" />
         <meta property="og:title" content="Produk Kerajinan Tangan | Albae Handicraft" />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:image" content={featuredImage} />
         <meta property="og:image:alt" content="Koleksi Produk Albae Handicraft" />
-        <meta property="og:url" content={window.location.href} />
+        <meta property="og:url" content={currentUrl} />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@albaehandicraft" />
         <meta name="twitter:title" content="Produk Kerajinan Tangan | Albae Handicraft" />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={featuredImage} />
         <meta name="twitter:image:alt" content="Koleksi Produk Albae Handicraft" />
         
-        <link rel="canonical" href={window.location.href} />
+        <link rel="canonical" href={currentUrl} />
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

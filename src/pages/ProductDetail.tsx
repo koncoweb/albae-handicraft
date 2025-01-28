@@ -58,27 +58,67 @@ export default function ProductDetail() {
   // Prepare images array with featured_image and image_gallery
   const productImages = [product.featured_image, ...(product.image_gallery || [])].filter(Boolean);
   const mainImage = getFullImageUrl(productImages[selectedImage]);
+  const currentUrl = window.location.href;
+
+  // Prepare structured data for product
+  const structuredData = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.nama,
+    "description": product.description,
+    "image": productImages.map(getFullImageUrl),
+    "offers": {
+      "@type": "Offer",
+      "url": currentUrl,
+      "priceCurrency": "IDR",
+      "price": product.price,
+      "availability": "https://schema.org/InStock"
+    },
+    "brand": {
+      "@type": "Brand",
+      "name": "Albae Handicraft"
+    },
+    "category": product.category,
+    "material": product.material
+  };
 
   return (
     <Layout>
       <Helmet>
         <title>{product.nama} | Albae Handicraft</title>
         <meta name="description" content={metaDescription} />
-        <meta name="keywords" content={`${product.nama}, kerajinan tangan, handicraft, ${product.material}`} />
+        <meta name="keywords" content={`${product.nama}, kerajinan tangan, handicraft, ${product.category}, ${product.material}`} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="product" />
+        <meta property="og:site_name" content="Albae Handicraft" />
         <meta property="og:title" content={`${product.nama} | Albae Handicraft`} />
         <meta property="og:description" content={metaDescription} />
-        <meta property="og:type" content="product" />
         <meta property="og:image" content={mainImage} />
         <meta property="og:image:alt" content={product.nama} />
-        <meta property="og:url" content={window.location.href} />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="product:price:amount" content={product.price.toString()} />
+        <meta property="product:price:currency" content="IDR" />
+        <meta property="product:category" content={product.category} />
+        
+        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@albaehandicraft" />
         <meta name="twitter:title" content={`${product.nama} | Albae Handicraft`} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={mainImage} />
         <meta name="twitter:image:alt" content={product.nama} />
-        <meta property="product:price:amount" content={product.price.toString()} />
-        <meta property="product:price:currency" content="IDR" />
-        <link rel="canonical" href={window.location.href} />
+        <meta name="twitter:label1" content="Harga" />
+        <meta name="twitter:data1" content={`Rp ${product.price.toLocaleString("id-ID")}`} />
+        <meta name="twitter:label2" content="Kategori" />
+        <meta name="twitter:data2" content={product.category} />
+        
+        <link rel="canonical" href={currentUrl} />
+        
+        {/* Structured Data / JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
