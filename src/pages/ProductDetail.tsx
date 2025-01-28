@@ -12,21 +12,16 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<number>(0);
 
   const { data: product, isLoading, error } = useQuery({
     queryKey: ["product", slug],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("slug", slug)
-        .single();
-
-      if (error) throw error;
-      if (!data) throw new Error("Product not found");
-      return data;
-    },
+    queryFn: () => getProduct(slug!),
+    enabled: !!slug,
+    staleTime: 1000 * 60 * 5, // Data dianggap stale setelah 5 menit
+    gcTime: 1000 * 60 * 30, // Data disimpan di garbage collection selama 30 menit
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -42,7 +37,6 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (product) {
-      setSelectedImage(product.featured_image);
       document.title = `${product.nama} - Albae Handicraft`;
       // Update meta description for SEO
       const metaDescription = document.querySelector('meta[name="description"]');
@@ -109,46 +103,32 @@ export default function ProductDetail() {
         <link rel="canonical" href={window.location.href} />
       </Helmet>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <img
-              src={selectedImage || product.featured_image}
-              alt={product.nama}
-              className="w-full rounded-lg object-cover aspect-square"
-              onError={(e) => {
-                e.currentTarget.src = "/placeholder.svg";
-                toast({
-                  variant: "destructive",
-                  title: "Error",
-                  description: "Failed to load image",
-                });
-              }}
-            />
-            <div className="grid grid-cols-4 gap-2">
-              <div 
-                className={`cursor-pointer p-1 rounded-lg ${selectedImage === product.featured_image ? 'ring-2 ring-primary' : ''}`}
-                onClick={() => setSelectedImage(product.featured_image)}
-              >
-                <img
-                  src={product.featured_image}
-                  alt={`${product.nama} - Featured`}
-                  className="w-full h-20 object-cover rounded-lg"
-                  onError={(e) => {
-                    e.currentTarget.src = "/placeholder.svg";
-                  }}
-                />
-              </div>
-              {product.image_gallery?.map((image, index) => (
+          <div>
+            <div className="aspect-square overflow-hidden rounded-lg bg-muted mb-4">
+              <img
+                src={productImages[selectedImage]}
+                alt={`${product.nama} - Gambar Utama`}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.svg";
+                }}
+              />
+            </div>
+            <div className="grid grid-cols-4 gap-4">
+              {productImages.map((image, index) => (
                 <div
                   key={index}
-                  className={`cursor-pointer p-1 rounded-lg ${selectedImage === image ? 'ring-2 ring-primary' : ''}`}
-                  onClick={() => setSelectedImage(image)}
+                  className={`aspect-square cursor-pointer rounded-lg overflow-hidden border-2 ${
+                    selectedImage === index ? "border-primary" : "border-transparent"
+                  }`}
+                  onClick={() => setSelectedImage(index)}
                 >
                   <img
                     src={image}
                     alt={`${product.nama} - Gambar ${index + 1}`}
-                    className="w-full h-20 object-cover rounded-lg"
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = "/placeholder.svg";
                     }}
@@ -174,3 +154,15 @@ export default function ProductDetail() {
     </Layout>
   );
 }
+
+const getProduct = async (slug: string) => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (error) throw error;
+  if (!data) throw new Error("Product not found");
+  return data;
+};

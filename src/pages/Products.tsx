@@ -28,6 +28,7 @@ export default function Products() {
     queryKey: ["products"],
     queryFn: getProducts,
     staleTime: 1000 * 60 * 5, // Data dianggap stale setelah 5 menit
+    gcTime: 1000 * 60 * 30, // Data disimpan di garbage collection selama 30 menit
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
@@ -44,7 +45,7 @@ export default function Products() {
     .join(", ")} dan banyak lagi.`;
 
   // Get featured image for og:image
-  const featuredImage = products[0] ? getFullImageUrl(products[0].image_url) : getFullImageUrl("/placeholder.svg");
+  const featuredImage = products[0] ? getFullImageUrl(products[0].featured_image) : getFullImageUrl("/placeholder.svg");
 
   return (
     <Layout>
@@ -99,7 +100,7 @@ export default function Products() {
                 <CardContent className="p-4">
                   <div className="aspect-square mb-4 overflow-hidden rounded-lg bg-muted">
                     <img
-                      src={getFullImageUrl(product.image_url)}
+                      src={getFullImageUrl(product.featured_image)}
                       alt={product.nama}
                       className="h-full w-full object-cover"
                       loading="lazy"
