@@ -131,15 +131,15 @@ export default function ProductDetail() {
             </div>
           </div>
           <div className="space-y-4">
-            <h1 className="text-3xl font-bold text-gray-900">{product.nama}</h1>
+            <h1 className="text-3xl font-bold text-foreground">{product.nama}</h1>
             <p className="text-2xl font-semibold text-primary">
               Rp {product.price.toLocaleString("id-ID")}
             </p>
-            <div className="prose max-w-none">
-              <h2 className="text-xl font-semibold">Deskripsi</h2>
-              <p>{product.description}</p>
-              <h2 className="text-xl font-semibold">Material</h2>
-              <p>{product.material}</p>
+            <div className="prose dark:prose-invert max-w-none">
+              <h2 className="text-xl font-semibold text-foreground">Deskripsi</h2>
+              <p className="text-muted-foreground">{product.description}</p>
+              <h2 className="text-xl font-semibold text-foreground">Material</h2>
+              <p className="text-muted-foreground">{product.material}</p>
             </div>
           </div>
         </div>
