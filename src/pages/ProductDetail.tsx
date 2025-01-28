@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -80,8 +81,25 @@ export default function ProductDetail() {
     );
   }
 
+  // Generate meta description dari data produk
+  const metaDescription = `${product.nama} - ${product.description.slice(0, 150)}...`;
+  const productImages = product.image_gallery || [product.featured_image];
+
   return (
     <Layout>
+      <Helmet>
+        <title>{product.nama} | Albae Handicraft</title>
+        <meta name="description" content={metaDescription} />
+        <meta name="keywords" content={`${product.nama}, kerajinan tangan, handicraft, ${product.material}`} />
+        <meta property="og:title" content={`${product.nama} | Albae Handicraft`} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:type" content="product" />
+        <meta property="og:image" content={productImages[0]} />
+        <meta property="product:price:amount" content={product.price.toString()} />
+        <meta property="product:price:currency" content="IDR" />
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">

@@ -1,64 +1,62 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
+import { Search } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { Filter, Search } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+// Fungsi untuk mengambil data produk
+async function getProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
 
 export default function Products() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    document.title = "Produk - Albae Handicraft";
-  }, []);
-
-  const { data: products, isLoading } = useQuery({
-    queryKey: ["products", searchTerm, selectedCategory],
-    queryFn: async () => {
-      let query = supabase
-        .from("products")
-        .select("*")
-        .eq("active", true);
-
-      if (searchTerm) {
-        query = query.ilike("nama", `%${searchTerm}%`);
-      }
-
-      if (selectedCategory) {
-        query = query.eq("category", selectedCategory);
-      }
-
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
-    },
+  // Menggunakan prefetchQuery untuk data produk
+  const { data: products = [] } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+    staleTime: 1000 * 60 * 5, // Data dianggap stale setelah 5 menit
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("category")
-        .eq("active", true);
-      
-      if (error) throw error;
-      const uniqueCategories = [...new Set(data.map(item => item.category))];
-      return uniqueCategories;
-    },
-  });
+  // Filter produk berdasarkan pencarian
+  const filteredProducts = products.filter((product) =>
+    product.nama.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Generate meta description dari data produk
+  const metaDescription = `Temukan koleksi ${products.length} produk kerajinan tangan terbaik dari Albae Handicraft. Produk unggulan kami meliputi ${products
+    .slice(0, 3)
+    .map((p) => p.nama)
+    .join(", ")} dan banyak lagi.`;
 
   return (
     <Layout>
+      <Helmet>
+        <title>Produk Kerajinan Tangan | Albae Handicraft</title>
+        <meta name="description" content={metaDescription} />
+        <meta name="keywords" content="kerajinan tangan, handicraft, produk lokal, indonesia" />
+        <meta property="og:title" content="Produk Kerajinan Tangan | Albae Handicraft" />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            Produk Kami
-          </h1>
+          <h1 className="text-4xl font-bold text-foreground mb-4">Produk Kami</h1>
           <p className="text-xl text-muted-foreground">
             Temukan koleksi kerajinan tangan terbaik kami
           </p>
@@ -66,57 +64,40 @@ export default function Products() {
 
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <Input
-              type="text"
+              type="search"
               placeholder="Cari produk..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Filter className="text-gray-400" />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="border rounded-md p-2"
-            >
-              <option value="">Semua Kategori</option>
-              {categories?.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="text-center py-8">Memuat...</div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products?.map((product) => (
-              <Card 
-                key={product.id} 
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => navigate(`/products/${product.slug}`)}
-              >
-                <img
-                  src={product.featured_image}
-                  alt={product.nama}
-                  className="w-full h-48 object-cover rounded-t-lg"
-                />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <Link key={product.id} to={`/products/${product.slug}`}>
+              <Card className="h-full hover:shadow-lg transition-shadow">
                 <CardContent className="p-4">
-                  <h2 className="font-semibold text-lg mb-2">{product.nama}</h2>
-                  <p className="text-gray-600 mb-2">{product.category}</p>
-                  <p className="font-bold">Rp {product.price.toLocaleString('id-ID')}</p>
+                  <div className="aspect-square mb-4 overflow-hidden rounded-lg bg-muted">
+                    <img
+                      src={product.image_url || "/placeholder.svg"}
+                      alt={product.nama}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.src = "/placeholder.svg";
+                      }}
+                    />
+                  </div>
+                  <h2 className="font-semibold text-foreground mb-2">{product.nama}</h2>
+                  <p className="text-primary">Rp {product.price.toLocaleString("id-ID")}</p>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        )}
+            </Link>
+          ))}
+        </div>
       </div>
     </Layout>
   );
