@@ -64,19 +64,19 @@ export default function Index() {
 
   return (
     <Layout>
-      <section className="bg-gray-50 py-12 sm:py-16">
+      <section className="bg-background py-12 sm:py-16 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
+            <h1 className="text-4xl font-bold text-foreground sm:text-5xl">
               Selamat Datang di Albae Handicraft
             </h1>
-            <p className="mt-4 text-xl text-gray-600">
+            <p className="mt-4 text-xl text-muted-foreground">
               Temukan koleksi produk kerajinan tangan kami yang dibuat dengan penuh cinta dan perhatian
             </p>
             <div className="mt-8">
               <Link
                 to="/products"
-                className="inline-block bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90"
+                className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-md hover:bg-primary/90"
               >
                 Lihat Semua Produk
               </Link>
@@ -87,7 +87,7 @@ export default function Index() {
 
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Produk Unggulan</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8">Produk Unggulan</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts?.map((product) => (
               <Card key={product.id}>

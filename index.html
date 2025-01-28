@@ -10,6 +10,15 @@
     <meta property="og:description" content="Temukan produk kerajinan tangan unik di Albae Handicraft. Belanja koleksi furnitur, dekorasi rumah, dan aksesoris buatan pengrajin." />
     <meta property="og:image" content="/og-image.png" />
     <meta name="keywords" content="kerajinan tangan, handmade, artisan, furnitur, dekorasi rumah, aksesoris" />
+    <script>
+      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+      if (localStorage.getItem('vite-ui-theme') === 'dark' ||
+        (!localStorage.getItem('vite-ui-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

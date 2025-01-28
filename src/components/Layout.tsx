@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "./theme-toggle";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
@@ -22,42 +23,45 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <header className="border-b bg-background">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="text-2xl font-bold text-gray-900">
+          <Link to="/" className="text-2xl font-bold">
             Albae Handicraft
           </Link>
           <div className="flex items-center space-x-4">
-            <Link to="/" className="text-gray-700 hover:text-gray-900">
+            <Link to="/" className="hover:text-primary">
               Beranda
             </Link>
-            <Link to="/products" className="text-gray-700 hover:text-gray-900">
+            <Link to="/products" className="hover:text-primary">
               Produk
             </Link>
-            <Link to="/about" className="text-gray-700 hover:text-gray-900">
+            <Link to="/about" className="hover:text-primary">
               Tentang
             </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-gray-900">
+            <Link to="/contact" className="hover:text-primary">
               Kontak
             </Link>
             <button
               onClick={handleAuthAction}
-              className="text-gray-700 hover:text-gray-900"
+              className="hover:text-primary"
             >
               {isAuthenticated ? "Keluar" : "Login"}
             </button>
+            <ThemeToggle />
           </div>
         </nav>
       </header>
-      <main className="flex-grow">
+
+      <main className="flex-1 bg-background">
         {children}
       </main>
-      <footer className="bg-gray-100">
+
+      <footer className="border-t bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <p className="text-center text-gray-500">
-            © {new Date().getFullYear()} Albae Handicraft. Hak Cipta Dilindungi.
-          </p>
+          <div className="text-center">
+            <p>&copy; {new Date().getFullYear()} Albae Handicraft. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
