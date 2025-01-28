@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
-import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { getFullImageUrl } from "@/lib/utils";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -83,7 +84,8 @@ export default function ProductDetail() {
 
   // Generate meta description dari data produk
   const metaDescription = `${product.nama} - ${product.description.slice(0, 150)}...`;
-  const productImages = product.image_gallery || [product.featured_image];
+  const productImages = (product.image_gallery || [product.featured_image]).map(getFullImageUrl);
+  const mainImage = getFullImageUrl(product.featured_image);
 
   return (
     <Layout>
@@ -94,7 +96,14 @@ export default function ProductDetail() {
         <meta property="og:title" content={`${product.nama} | Albae Handicraft`} />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="product" />
-        <meta property="og:image" content={productImages[0]} />
+        <meta property="og:image" content={mainImage} />
+        <meta property="og:image:alt" content={product.nama} />
+        <meta property="og:url" content={window.location.href} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${product.nama} | Albae Handicraft`} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={mainImage} />
+        <meta name="twitter:image:alt" content={product.nama} />
         <meta property="product:price:amount" content={product.price.toString()} />
         <meta property="product:price:currency" content="IDR" />
         <link rel="canonical" href={window.location.href} />

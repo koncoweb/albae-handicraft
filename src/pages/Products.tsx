@@ -7,6 +7,7 @@ import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import { getFullImageUrl } from "@/lib/utils";
 
 // Fungsi untuk mengambil data produk
 async function getProducts() {
@@ -42,15 +43,31 @@ export default function Products() {
     .map((p) => p.nama)
     .join(", ")} dan banyak lagi.`;
 
+  // Get featured image for og:image
+  const featuredImage = products[0] ? getFullImageUrl(products[0].image_url) : getFullImageUrl("/placeholder.svg");
+
   return (
     <Layout>
       <Helmet>
         <title>Produk Kerajinan Tangan | Albae Handicraft</title>
         <meta name="description" content={metaDescription} />
         <meta name="keywords" content="kerajinan tangan, handicraft, produk lokal, indonesia" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
         <meta property="og:title" content="Produk Kerajinan Tangan | Albae Handicraft" />
         <meta property="og:description" content={metaDescription} />
-        <meta property="og:type" content="website" />
+        <meta property="og:image" content={featuredImage} />
+        <meta property="og:image:alt" content="Koleksi Produk Albae Handicraft" />
+        <meta property="og:url" content={window.location.href} />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Produk Kerajinan Tangan | Albae Handicraft" />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={featuredImage} />
+        <meta name="twitter:image:alt" content="Koleksi Produk Albae Handicraft" />
+        
         <link rel="canonical" href={window.location.href} />
       </Helmet>
 
@@ -82,7 +99,7 @@ export default function Products() {
                 <CardContent className="p-4">
                   <div className="aspect-square mb-4 overflow-hidden rounded-lg bg-muted">
                     <img
-                      src={product.image_url || "/placeholder.svg"}
+                      src={getFullImageUrl(product.image_url)}
                       alt={product.nama}
                       className="h-full w-full object-cover"
                       loading="lazy"

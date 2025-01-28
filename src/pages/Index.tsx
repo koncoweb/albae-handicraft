@@ -1,11 +1,25 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { testSupabaseConnection } from "@/utils/supabaseTest";
 import { useToast } from "@/hooks/use-toast";
+import { getFullImageUrl } from "@/lib/utils";
+
+// Fungsi untuk mengambil featured products
+async function getFeaturedProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("active", true)
+    .limit(4);
+
+  if (error) throw error;
+  return data;
+}
 
 export default function Index() {
   const { toast } = useToast();
@@ -30,26 +44,16 @@ export default function Index() {
     });
   }, [toast]);
 
-  const { data: featuredProducts, isError } = useQuery({
+  const { data: featuredProducts = [], isError } = useQuery({
     queryKey: ["featuredProducts"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("active", true)
-        .limit(4);
-      
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch products: " + error.message,
-        });
-        throw error;
-      }
-      return data;
-    },
+    queryFn: getFeaturedProducts,
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
+
+  // Get hero image for og:image
+  const heroImage = featuredProducts[0] ? getFullImageUrl(featuredProducts[0].featured_image) : getFullImageUrl("/placeholder.svg");
 
   if (isError) {
     return (
@@ -64,6 +68,41 @@ export default function Index() {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Albae Handicraft | Kerajinan Tangan Berkualitas</title>
+        <meta
+          name="description"
+          content="Albae Handicraft menghadirkan kerajinan tangan berkualitas tinggi dengan sentuhan tradisional dan modern. Temukan koleksi unik kami untuk mempercantik ruangan Anda."
+        />
+        <meta
+          name="keywords"
+          content="kerajinan tangan, handicraft, produk lokal, dekorasi, indonesia, kaligrafi"
+        />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Albae Handicraft | Kerajinan Tangan Berkualitas" />
+        <meta
+          property="og:description"
+          content="Albae Handicraft menghadirkan kerajinan tangan berkualitas tinggi dengan sentuhan tradisional dan modern. Temukan koleksi unik kami untuk mempercantik ruangan Anda."
+        />
+        <meta property="og:image" content={heroImage} />
+        <meta property="og:image:alt" content="Albae Handicraft - Kerajinan Tangan Berkualitas" />
+        <meta property="og:url" content={window.location.href} />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Albae Handicraft | Kerajinan Tangan Berkualitas" />
+        <meta
+          name="twitter:description"
+          content="Albae Handicraft menghadirkan kerajinan tangan berkualitas tinggi dengan sentuhan tradisional dan modern. Temukan koleksi unik kami untuk mempercantik ruangan Anda."
+        />
+        <meta name="twitter:image" content={heroImage} />
+        <meta name="twitter:image:alt" content="Albae Handicraft - Kerajinan Tangan Berkualitas" />
+        
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
+
       <section className="bg-background py-12 sm:py-16 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -89,7 +128,7 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-foreground mb-8">Produk Unggulan</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts?.map((product) => (
+            {featuredProducts.map((product) => (
               <Card key={product.id}>
                 <Link to={`/products/${product.slug}`}>
                   <img
