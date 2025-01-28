@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/Layout";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getFullImageUrl } from "@/lib/utils";
 
@@ -12,7 +12,7 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [selectedImage, setSelectedImage] = useState<number>(0);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   const { data: product, isLoading, error } = useQuery({
     queryKey: ["product", slug],
@@ -29,36 +29,22 @@ export default function ProductDetail() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load product. Please try again later.",
+        description: "Failed to load product",
       });
       navigate("/products");
     }
   }, [error, navigate, toast]);
 
-  useEffect(() => {
-    if (product) {
-      document.title = `${product.nama} - Albae Handicraft`;
-      // Update meta description for SEO
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute(
-          "content",
-          `${product.nama} - ${product.description}`
-        );
-      }
-    }
-  }, [product]);
-
-  if (isLoading) {
+  if (isLoading || !product) {
     return (
       <Layout>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Skeleton className="w-full aspect-square rounded-lg" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="animate-pulse">
+            <div className="h-96 bg-muted rounded-lg mb-8" />
             <div className="space-y-4">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-6 w-1/4" />
-              <Skeleton className="h-24 w-full" />
+              <div className="h-8 bg-muted rounded w-3/4" />
+              <div className="h-4 bg-muted rounded w-1/2" />
+              <div className="h-4 bg-muted rounded w-full" />
             </div>
           </div>
         </div>
@@ -66,20 +52,12 @@ export default function ProductDetail() {
     );
   }
 
-  if (!product) {
-    return (
-      <Layout>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <p className="text-center text-gray-500">Product not found</p>
-        </div>
-      </Layout>
-    );
-  }
-
   // Generate meta description dari data produk
   const metaDescription = `${product.nama} - ${product.description.slice(0, 150)}...`;
-  const productImages = (product.image_gallery || [product.featured_image]).map(getFullImageUrl);
-  const mainImage = getFullImageUrl(product.featured_image);
+  
+  // Prepare images array with featured_image and image_gallery
+  const productImages = [product.featured_image, ...(product.image_gallery || [])].filter(Boolean);
+  const mainImage = getFullImageUrl(productImages[selectedImage]);
 
   return (
     <Layout>
@@ -108,7 +86,7 @@ export default function ProductDetail() {
           <div>
             <div className="aspect-square overflow-hidden rounded-lg bg-muted mb-4">
               <img
-                src={productImages[selectedImage]}
+                src={mainImage}
                 alt={`${product.nama} - Gambar Utama`}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -118,7 +96,7 @@ export default function ProductDetail() {
             </div>
             <div className="grid grid-cols-4 gap-4">
               {productImages.map((image, index) => (
-                <div
+                <button
                   key={index}
                   className={`aspect-square cursor-pointer rounded-lg overflow-hidden border-2 ${
                     selectedImage === index ? "border-primary" : "border-transparent"
@@ -126,28 +104,46 @@ export default function ProductDetail() {
                   onClick={() => setSelectedImage(index)}
                 >
                   <img
-                    src={image}
+                    src={getFullImageUrl(image)}
                     alt={`${product.nama} - Gambar ${index + 1}`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = "/placeholder.svg";
                     }}
                   />
-                </div>
+                </button>
               ))}
             </div>
           </div>
-          <div className="space-y-4">
-            <h1 className="text-3xl font-bold text-foreground">{product.nama}</h1>
-            <p className="text-2xl font-semibold text-primary">
-              Rp {product.price.toLocaleString("id-ID")}
-            </p>
-            <div className="prose dark:prose-invert max-w-none">
-              <h2 className="text-xl font-semibold text-foreground">Deskripsi</h2>
-              <p className="text-muted-foreground">{product.description}</p>
-              <h2 className="text-xl font-semibold text-foreground">Material</h2>
-              <p className="text-muted-foreground">{product.material}</p>
+
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">{product.nama}</h1>
+              <p className="text-2xl font-semibold text-primary mt-2">
+                Rp {product.price.toLocaleString("id-ID")}
+              </p>
             </div>
+
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Deskripsi</h2>
+                <p className="text-muted-foreground mt-2">{product.description}</p>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Material</h2>
+                <p className="text-muted-foreground mt-2">{product.material}</p>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Kategori</h2>
+                <p className="text-muted-foreground mt-2">{product.category}</p>
+              </div>
+            </div>
+
+            <Button className="w-full" size="lg">
+              Hubungi Kami
+            </Button>
           </div>
         </div>
       </div>
