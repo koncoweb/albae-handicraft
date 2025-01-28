@@ -61,7 +61,7 @@ export default function ProductDetail() {
   const currentUrl = window.location.href;
 
   // Prepare structured data for product
-  const structuredData = {
+  const productStructuredData = {
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": product.nama,
@@ -72,7 +72,9 @@ export default function ProductDetail() {
       "url": currentUrl,
       "priceCurrency": "IDR",
       "price": product.price,
-      "availability": "https://schema.org/InStock"
+      "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+      "availability": "https://schema.org/InStock",
+      "itemCondition": "https://schema.org/NewCondition"
     },
     "brand": {
       "@type": "Brand",
@@ -81,6 +83,40 @@ export default function ProductDetail() {
     "category": product.category,
     "material": product.material
   };
+
+  // Prepare breadcrumb structured data
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org/",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": window.location.origin
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Produk",
+        "item": `${window.location.origin}/products`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": product.nama,
+        "item": currentUrl
+      }
+    ]
+  };
+
+  // Format price for meta tags
+  const formattedPrice = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(product.price);
 
   return (
     <Layout>
@@ -97,9 +133,13 @@ export default function ProductDetail() {
         <meta property="og:image" content={mainImage} />
         <meta property="og:image:alt" content={product.nama} />
         <meta property="og:url" content={currentUrl} />
+        <meta property="product:brand" content="Albae Handicraft" />
+        <meta property="product:availability" content="in stock" />
+        <meta property="product:condition" content="new" />
         <meta property="product:price:amount" content={product.price.toString()} />
         <meta property="product:price:currency" content="IDR" />
         <meta property="product:category" content={product.category} />
+        <meta property="product:retailer_item_id" content={product.id} />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -109,7 +149,7 @@ export default function ProductDetail() {
         <meta name="twitter:image" content={mainImage} />
         <meta name="twitter:image:alt" content={product.nama} />
         <meta name="twitter:label1" content="Harga" />
-        <meta name="twitter:data1" content={`Rp ${product.price.toLocaleString("id-ID")}`} />
+        <meta name="twitter:data1" content={formattedPrice} />
         <meta name="twitter:label2" content="Kategori" />
         <meta name="twitter:data2" content={product.category} />
         
@@ -117,7 +157,7 @@ export default function ProductDetail() {
         
         {/* Structured Data / JSON-LD */}
         <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
+          {JSON.stringify([productStructuredData, breadcrumbStructuredData])}
         </script>
       </Helmet>
 

@@ -39,14 +39,39 @@ export default function Products() {
   );
 
   // Generate meta description dari data produk
-  const metaDescription = `Temukan koleksi ${products.length} produk kerajinan tangan terbaik dari Albae Handicraft. Produk unggulan kami meliputi ${products
-    .slice(0, 3)
-    .map((p) => p.nama)
-    .join(", ")} dan banyak lagi.`;
+  const metaDescription = products.length > 0
+    ? `Temukan koleksi ${products.length} produk kerajinan tangan terbaik dari Albae Handicraft. Produk unggulan kami meliputi ${products
+        .slice(0, 3)
+        .map((p) => p.nama)
+        .join(", ")} dan banyak lagi.`
+    : "Temukan koleksi produk kerajinan tangan terbaik dari Albae Handicraft. Kami menyediakan berbagai macam kerajinan tangan berkualitas tinggi.";
 
   // Get featured image for og:image
   const featuredImage = products[0] ? getFullImageUrl(products[0].featured_image) : getFullImageUrl("/placeholder.svg");
   const currentUrl = window.location.href;
+
+  // Prepare structured data for product list
+  const structuredData = {
+    "@context": "https://schema.org/",
+    "@type": "ItemList",
+    "itemListElement": products.map((product, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "Product",
+        "name": product.nama,
+        "description": product.description,
+        "image": getFullImageUrl(product.featured_image),
+        "url": `${window.location.origin}/products/${product.slug}`,
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "IDR",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    }))
+  };
 
   return (
     <Layout>
@@ -73,6 +98,11 @@ export default function Products() {
         <meta name="twitter:image:alt" content="Koleksi Produk Albae Handicraft" />
         
         <link rel="canonical" href={currentUrl} />
+
+        {/* Structured Data / JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
