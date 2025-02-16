@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -143,7 +144,7 @@ export default function Products() {
                     />
                   </div>
                   <h2 className="font-semibold text-foreground mb-2">{product.nama}</h2>
-                  <p className="text-primary">Rp {product.price.toLocaleString("id-ID")}</p>
+                  <p className="text-primary">Harga Terjangkau - Hubungi Kami</p>
                 </CardContent>
               </Card>
             </Link>
