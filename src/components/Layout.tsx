@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -42,6 +43,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/contact" className="hover:text-primary">
               Kontak
             </Link>
+            {isAuthenticated && (
+              <Link to="/admin/products" className="hover:text-primary">
+                Admin Produk
+              </Link>
+            )}
             <button
               onClick={handleAuthAction}
               className="hover:text-primary"
