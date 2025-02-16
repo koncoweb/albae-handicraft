@@ -9,7 +9,6 @@ import { testSupabaseConnection } from "@/utils/supabaseTest";
 import { useToast } from "@/hooks/use-toast";
 import { getFullImageUrl } from "@/lib/utils";
 
-// Fungsi untuk mengambil featured products
 async function getFeaturedProducts() {
   const { data, error } = await supabase
     .from("products")
@@ -27,7 +26,6 @@ export default function Index() {
   useEffect(() => {
     document.title = "Albae Handicraft - Kerajinan Tangan & Produk Artisan";
     
-    // Test Supabase connection on component mount
     testSupabaseConnection().then((isConnected) => {
       if (!isConnected) {
         toast({
@@ -47,13 +45,12 @@ export default function Index() {
   const { data: featuredProducts = [], isError } = useQuery({
     queryKey: ["featuredProducts"],
     queryFn: getFeaturedProducts,
-    staleTime: 1000 * 60 * 5, // Data dianggap stale setelah 5 menit
-    gcTime: 1000 * 60 * 30, // Data disimpan di garbage collection selama 30 menit
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
 
-  // Get hero image for og:image
   const heroImage = featuredProducts[0] ? getFullImageUrl(featuredProducts[0].featured_image) : getFullImageUrl("/placeholder.svg");
 
   if (isError) {
@@ -80,7 +77,6 @@ export default function Index() {
           content="kerajinan tangan, handicraft, produk lokal, dekorasi, indonesia, kaligrafi"
         />
         
-        {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Albae Handicraft | Kerajinan Tangan Berkualitas" />
         <meta
@@ -91,7 +87,6 @@ export default function Index() {
         <meta property="og:image:alt" content="Albae Handicraft - Kerajinan Tangan Berkualitas" />
         <meta property="og:url" content={window.location.href} />
         
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Albae Handicraft | Kerajinan Tangan Berkualitas" />
         <meta
@@ -138,8 +133,13 @@ export default function Index() {
                     className="w-full h-48 object-cover rounded-t-lg"
                   />
                   <CardContent className="p-4">
-                    <h3 className="font-semibold text-lg mb-2">{product.nama}</h3>
-                    <p className="text-gray-600">Rp {product.price.toLocaleString('id-ID')}</p>
+                    <h3 className="font-semibold text-lg mb-4">{product.nama}</h3>
+                    <Button 
+                      variant="secondary" 
+                      className="w-full"
+                    >
+                      Lihat Detail
+                    </Button>
                   </CardContent>
                 </Link>
               </Card>

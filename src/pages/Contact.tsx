@@ -1,10 +1,11 @@
+
 import { useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, BrandTiktok } from "lucide-react";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -42,16 +43,26 @@ export default function Contact() {
               <div className="space-y-4">
                 <p className="flex items-center text-muted-foreground">
                   <MapPin className="mr-2 h-5 w-5" />
-                  Jl. Kerajinan No. 123, Yogyakarta
+                  Workshop: Jalan Yos Sudarso, Ketandan, Batang - Jawa Tengah
                 </p>
-                <p className="flex items-center text-muted-foreground">
+                <a 
+                  href="https://wa.me/6285867500281" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center text-muted-foreground hover:text-primary"
+                >
                   <Phone className="mr-2 h-5 w-5" />
-                  +62 123 4567 890
-                </p>
-                <p className="flex items-center text-muted-foreground">
-                  <Mail className="mr-2 h-5 w-5" />
-                  info@albaehandicraft.com
-                </p>
+                  WhatsApp: +62 858-6750-0281
+                </a>
+                <a 
+                  href="https://www.tiktok.com/@albae469" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center text-muted-foreground hover:text-primary"
+                >
+                  <BrandTiktok className="mr-2 h-5 w-5" />
+                  TikTok: @albae469
+                </a>
               </div>
             </div>
 
