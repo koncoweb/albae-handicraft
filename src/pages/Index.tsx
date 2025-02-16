@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { testSupabaseConnection } from "@/utils/supabaseTest";
 import { useToast } from "@/hooks/use-toast";
@@ -42,14 +43,16 @@ export default function Index() {
     });
   }, [toast]);
 
-  const { data: featuredProducts = [], isError } = useQuery({
-    queryKey: ["featuredProducts"],
+  const queryOptions: UseQueryOptions<any, Error> = {
+    queryKey: ['featuredProducts'],
     queryFn: getFeaturedProducts,
     staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 30,
+    cacheTime: 1000 * 60 * 30,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-  });
+  };
+
+  const { data: featuredProducts = [], isError } = useQuery(queryOptions);
 
   const heroImage = featuredProducts[0] ? getFullImageUrl(featuredProducts[0].featured_image) : getFullImageUrl("/placeholder.svg");
 
