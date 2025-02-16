@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import Layout from "@/components/Layout";
 
@@ -9,58 +10,63 @@ export default function About() {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            Tentang Albae Handicraft
-          </h1>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="space-y-6">
-            <section>
-              <h2 className="text-2xl font-bold text-foreground mb-4">Cerita Kami</h2>
-              <p className="text-muted-foreground">
-                Albae Handicraft didirikan dengan semangat untuk melestarikan dan mempromosikan 
-                kerajinan tangan tradisional. Perjalanan kami dimulai dengan ide sederhana: 
-                menghadirkan produk kerajinan tangan autentik kepada orang-orang yang menghargai 
-                keindahan karya artisan.
-              </p>
-            </section>
-            
-            <section>
-              <h2 className="text-2xl font-bold text-foreground mb-4">Misi Kami</h2>
-              <p className="text-muted-foreground">
-                Kami berkomitmen untuk mendukung pengrajin lokal dan melestarikan teknik kerajinan 
-                tradisional sambil menghadirkan kerajinan tangan unik dan berkualitas tinggi kepada 
-                pelanggan kami. Setiap karya menceritakan kisah dan membawa dedikasi dari pengrajin 
-                yang terampil.
-              </p>
-            </section>
-          </div>
+        <div className="prose prose-lg mx-auto dark:prose-invert">
+          <h1 className="text-4xl font-bold text-center mb-8">Tentang Kami</h1>
           
-          <div className="space-y-6">
-            <section>
-              <h2 className="text-2xl font-bold text-foreground mb-4">Nilai-Nilai Kami</h2>
-              <ul className="space-y-4 text-muted-foreground">
-                <li className="flex items-start">
-                  <span className="font-semibold mr-2">Kualitas:</span>
-                  Setiap produk dibuat dengan penuh perhatian terhadap detail.
-                </li>
-                <li className="flex items-start">
-                  <span className="font-semibold mr-2">Keaslian:</span>
-                  Kami merayakan teknik tradisional dan material asli.
-                </li>
-                <li className="flex items-start">
-                  <span className="font-semibold mr-2">Keberlanjutan:</span>
-                  Kami memprioritaskan praktik dan material ramah lingkungan.
-                </li>
-                <li className="flex items-start">
-                  <span className="font-semibold mr-2">Komunitas:</span>
-                  Mendukung pengrajin lokal dan melestarikan warisan budaya.
-                </li>
-              </ul>
-            </section>
+          <p>
+            Albae Handicraft didirikan oleh Ali, seorang warga Ketandan, Jalan Yos Sudarso, Batang, 
+            Jawa Tengah, dengan tujuan untuk melestarikan dan mengembangkan seni kerajinan tangan 
+            Indonesia, khususnya melalui produk-produk yang unik, terjangkau, dan berkualitas tinggi. 
+            Berawal dari kecintaan Ali terhadap seni dan budaya lokal, Albae Handicraft kini hadir 
+            untuk memenuhi kebutuhan Anda akan produk-produk декора, pakaian, dan aksesoris yang 
+            tidak hanya indah, tetapi juga memiliki nilai seni dan religi yang mendalam.
+          </p>
+
+          <div className="my-8">
+            <iframe 
+              src="https://www.tiktok.com/embed/7433490931585666309" 
+              className="w-full h-[600px] mx-auto"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
           </div>
+
+          <h2 className="text-2xl font-bold mt-8 mb-4">Produk Kami</h2>
+          <p>
+            Kami menawarkan berbagai macam produk, mulai dari kaligrafi LED yang memukau, stiker 
+            label yang menarik untuk berbagai kebutuhan, hingga kaos dan apparel yang стильный dengan 
+            sentuhan kerajinan tangan. Setiap produk Albae Handicraft dibuat dengan cermat dan teliti 
+            oleh para pengrajin terampil, menggunakan bahan-bahan berkualitas tinggi dan дизайн yang 
+            inovatif. Kami berkomitmen untuk menghadirkan produk-produk yang tidak hanya indah 
+            dipandang, tetapi juga ramah lingkungan.
+          </p>
+
+          <h2 className="text-2xl font-bold mt-8 mb-4">Visi Kami</h2>
+          <p>
+            Menjadi Pengrajin terpercaya yang menghasilkan produk-produk kerajinan tangan berkualitas 
+            tinggi dengan desain yang unik dan inovatif, serta berkontribusi pada pelestarian budaya 
+            Indonesia.
+          </p>
+
+          <h2 className="text-2xl font-bold mt-8 mb-4">Misi Kami</h2>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Menghasilkan produk-produk kerajinan tangan yang berkualitas tinggi dan memiliki nilai seni yang tinggi.</li>
+            <li>Mengembangkan desain-desain yang inovatif dan kreatif.</li>
+            <li>Mempromosikan seni kerajinan tangan Indonesia ke pasar nasional dan internasional.</li>
+            <li>Memberikan pelayanan yang terbaik kepada pelanggan.</li>
+          </ul>
+
+          <h2 className="text-2xl font-bold mt-8 mb-4">Hubungi Kami</h2>
+          <p>
+            Untuk informasi lebih lanjut tentang produk-produk kami, jangan ragu untuk menghubungi 
+            kami melalui WhatsApp di <a href="https://wa.me/6285867500281" className="text-primary hover:underline">
+            +62 858-6750-0281</a>. Kami akan dengan senang hati membantu Anda menemukan produk yang 
+            sesuai dengan kebutuhan dan selera Anda.
+          </p>
+
+          <p className="text-xl font-semibold text-center mt-8 italic">
+            Albae Handicraft - Sentuhan Seni dalam Setiap Produk
+          </p>
         </div>
       </div>
     </Layout>
