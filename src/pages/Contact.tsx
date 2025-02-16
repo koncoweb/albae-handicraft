@@ -1,11 +1,10 @@
-
 import { useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { MapPin, Phone, BrandTiktok } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -55,12 +54,11 @@ export default function Contact() {
                   WhatsApp: +62 858-6750-0281
                 </a>
                 <a 
-                  href="https://www.tiktok.com/@albae469" 
+                  href="https://tiktok.com/@albae469" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center text-muted-foreground hover:text-primary"
                 >
-                  <BrandTiktok className="mr-2 h-5 w-5" />
                   TikTok: @albae469
                 </a>
               </div>
