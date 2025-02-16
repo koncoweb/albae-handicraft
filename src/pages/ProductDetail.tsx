@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getFullImageUrl } from "@/lib/utils";
+import { MessageSquare } from "lucide-react";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -18,8 +19,8 @@ export default function ProductDetail() {
     queryKey: ["product", slug],
     queryFn: () => getProduct(slug!),
     enabled: !!slug,
-    staleTime: 1000 * 60 * 5, // Data dianggap stale setelah 5 menit
-    gcTime: 1000 * 60 * 30, // Data disimpan di garbage collection selama 30 menit
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
@@ -52,15 +53,12 @@ export default function ProductDetail() {
     );
   }
 
-  // Generate meta description dari data produk
   const metaDescription = `${product.nama} - ${product.description.slice(0, 150)}...`;
   
-  // Prepare images array with featured_image and image_gallery
   const productImages = [product.featured_image, ...(product.image_gallery || [])].filter(Boolean);
   const mainImage = getFullImageUrl(productImages[selectedImage]);
   const currentUrl = window.location.href;
 
-  // Prepare structured data for product
   const productStructuredData = {
     "@context": "https://schema.org/",
     "@type": "Product",
@@ -84,7 +82,6 @@ export default function ProductDetail() {
     "material": product.material
   };
 
-  // Prepare breadcrumb structured data
   const breadcrumbStructuredData = {
     "@context": "https://schema.org/",
     "@type": "BreadcrumbList",
@@ -110,7 +107,6 @@ export default function ProductDetail() {
     ]
   };
 
-  // Format price for meta tags
   const formattedPrice = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
@@ -125,7 +121,6 @@ export default function ProductDetail() {
         <meta name="description" content={metaDescription} />
         <meta name="keywords" content={`${product.nama}, kerajinan tangan, handicraft, ${product.category}, ${product.material}`} />
         
-        {/* Open Graph / Facebook */}
         <meta property="og:type" content="product" />
         <meta property="og:site_name" content="Albae Handicraft" />
         <meta property="og:title" content={`${product.nama} | Albae Handicraft`} />
@@ -141,7 +136,6 @@ export default function ProductDetail() {
         <meta property="product:category" content={product.category} />
         <meta property="product:retailer_item_id" content={product.id} />
         
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@albaehandicraft" />
         <meta name="twitter:title" content={`${product.nama} | Albae Handicraft`} />
@@ -155,7 +149,6 @@ export default function ProductDetail() {
         
         <link rel="canonical" href={currentUrl} />
         
-        {/* Structured Data / JSON-LD */}
         <script type="application/ld+json">
           {JSON.stringify([productStructuredData, breadcrumbStructuredData])}
         </script>
@@ -200,7 +193,7 @@ export default function ProductDetail() {
             <div>
               <h1 className="text-3xl font-bold text-foreground">{product.nama}</h1>
               <p className="text-2xl font-semibold text-primary mt-2">
-                Rp {product.price.toLocaleString("id-ID")}
+                Harga Terjangkau - Hubungi Kami
               </p>
             </div>
 
@@ -221,8 +214,13 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <Button className="w-full" size="lg">
-              Hubungi Kami
+            <Button 
+              className="w-full bg-[#25D366] hover:bg-[#128C7E]" 
+              size="lg"
+              onClick={() => window.open('https://wa.me/6285867500281', '_blank')}
+            >
+              <MessageSquare className="mr-2" />
+              Hubungi Kami via WhatsApp
             </Button>
           </div>
         </div>
