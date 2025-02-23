@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,7 @@ export default function Contact() {
                   WhatsApp: +62 858-6750-0281
                 </a>
                 <a 
-                  href="https://tiktok.com/@albae469" 
+                  href="https://www.tiktok.com/@albae469" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center text-muted-foreground hover:text-primary"
