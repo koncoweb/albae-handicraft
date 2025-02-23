@@ -104,7 +104,7 @@ export default function Contact() {
                   name="email"
                   type="email"
                   required
-                  placeholder="email.anda@contoh.com"
+                  placeholder="albaehandicraft@gmail.com"
                 />
               </div>
               

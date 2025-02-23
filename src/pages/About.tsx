@@ -17,7 +17,7 @@ export default function About() {
             Albae Handicraft didirikan oleh <b>ALIMAHMUDIN, seorang warga Gang Musi , Ketandan, Jalan Yos Sudarso, Batang, 
             Jawa Tengah</b>, dengan tujuan untuk melestarikan dan mengembangkan seni kerajinan tangan 
             Indonesia, khususnya melalui produk-produk yang unik, terjangkau, dan berkualitas tinggi. 
-            Berawal dari kecintaan Ali terhadap seni dan budaya lokal, Albae Handicraft kini hadir 
+            Berawal dari kecintaan ALIMAHMUDIN terhadap seni dan budaya lokal, Albae Handicraft kini hadir 
             untuk memenuhi kebutuhan Anda akan produk-produk kerajinan berkualitas, pakaian, dan aksesoris yang 
             tidak hanya indah, tetapi juga memiliki nilai seni dan religi yang mendalam.
           </p>
@@ -34,7 +34,7 @@ export default function About() {
           <h2 className="text-2xl font-bold mt-8 mb-4">Produk Kami</h2>
           <p>
             Kami menawarkan berbagai macam produk, mulai dari kaligrafi LED yang memukau, stiker 
-            label yang menarik untuk berbagai kebutuhan, hingga kaos dan apparel yang стильный dengan 
+            label yang menarik untuk berbagai kebutuhan, hingga kaos dan apparel, serta fashion lainnya  dengan 
             sentuhan kerajinan tangan. Setiap produk Albae Handicraft dibuat dengan cermat dan teliti 
             oleh para pengrajin terampil, menggunakan bahan-bahan berkualitas tinggi dan tahan lama yang 
             inovatif. Kami berkomitmen untuk menghadirkan produk-produk yang tidak hanya indah 
