@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -46,8 +47,8 @@ export default function Index() {
   const queryOptions: UseQueryOptions<any, Error> = {
     queryKey: ['featuredProducts'],
     queryFn: getFeaturedProducts,
-    staleTime: 1000 * 60 * 5,
-    cacheTime: 1000 * 60 * 30,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 30,   // 30 minutes (previously cacheTime)
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   };
