@@ -19,7 +19,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // Data dianggap stale setelah 5 menit
-      gcTime: 1000 * 60 * 30, // Data disimpan di garbage collection selama 30 menit
+      cacheTime: 1000 * 60 * 30, // Data disimpan di cache selama 30 menit
     },
   },
 });

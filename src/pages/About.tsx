@@ -14,11 +14,11 @@ export default function About() {
           <h1 className="text-4xl font-bold text-center mb-8">Tentang Kami</h1>
           
           <p>
-            Albae Handicraft didirikan oleh Ali, seorang warga Ketandan, Jalan Yos Sudarso, Batang, 
-            Jawa Tengah, dengan tujuan untuk melestarikan dan mengembangkan seni kerajinan tangan 
+            Albae Handicraft didirikan oleh <b>ALIMAHMUDIN, seorang warga Gang Musi , Ketandan, Jalan Yos Sudarso, Batang, 
+            Jawa Tengah</b>, dengan tujuan untuk melestarikan dan mengembangkan seni kerajinan tangan 
             Indonesia, khususnya melalui produk-produk yang unik, terjangkau, dan berkualitas tinggi. 
             Berawal dari kecintaan Ali terhadap seni dan budaya lokal, Albae Handicraft kini hadir 
-            untuk memenuhi kebutuhan Anda akan produk-produk декора, pakaian, dan aksesoris yang 
+            untuk memenuhi kebutuhan Anda akan produk-produk kerajinan berkualitas, pakaian, dan aksesoris yang 
             tidak hanya indah, tetapi juga memiliki nilai seni dan religi yang mendalam.
           </p>
 
@@ -36,7 +36,7 @@ export default function About() {
             Kami menawarkan berbagai macam produk, mulai dari kaligrafi LED yang memukau, stiker 
             label yang menarik untuk berbagai kebutuhan, hingga kaos dan apparel yang стильный dengan 
             sentuhan kerajinan tangan. Setiap produk Albae Handicraft dibuat dengan cermat dan teliti 
-            oleh para pengrajin terampil, menggunakan bahan-bahan berkualitas tinggi dan дизайн yang 
+            oleh para pengrajin terampil, menggunakan bahan-bahan berkualitas tinggi dan tahan lama yang 
             inovatif. Kami berkomitmen untuk menghadirkan produk-produk yang tidak hanya indah 
             dipandang, tetapi juga ramah lingkungan.
           </p>
@@ -60,7 +60,7 @@ export default function About() {
           <p>
             Untuk informasi lebih lanjut tentang produk-produk kami, jangan ragu untuk menghubungi 
             kami melalui WhatsApp di <a href="https://wa.me/6285867500281" className="text-primary hover:underline">
-            +62 858-6750-0281</a>. Kami akan dengan senang hati membantu Anda menemukan produk yang 
+            <b>085867500281</b></a>. Kami akan dengan senang hati membantu Anda menemukan produk yang 
             sesuai dengan kebutuhan dan selera Anda.
           </p>
 
